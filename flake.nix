@@ -35,50 +35,45 @@
   };
 
   outputs = { self, nixpkgs, home-manager, rust-overlay, nixvim, ... }@inputs: {
-    # # Please replace my-nixos with your hostname
-	  # nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-	  #   system = "x86_64-linux";
-	  #   specialArgs = { inherit inputs; };
-	  #   modules = [
-	  #     # Our main nixos configuration file
-	  #     ./nixos/configuration.nix
-	
-    #     # make home-manager as a module of nixos so that
-    #     # home-manager configuration will be deployed automatically
-    #     # when executing `nixos-rebuilt switch`
-    #     home-manager.nixosModules.home-manager {
-    #       home-manager.useGlobalPkgs = true;
-    #       home-manager.useUserPackages = true;
-        
-    #       home-manager.users.dylan = import ./home-manager/home.nix;
-    #     }
-        
-    #     ({ pkgs, ... }: {
-    #       nixpkgs.overlays = [ rust-overlay.overlays.default ];
-    #       environment.systemPackages = [ pkgs.rust-bin.stable.latest.default ];
-    #     })
-	  #   ];
-	  # };
+    # 
+    nixosConfigurations = {
+      spreckle = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./nixos/configuration-laptop.nix
+          ({ pkgs, ... }: {
+            nixpkgs.overlays = [ rust-overlay.overlays.default ];
+            environment.systemPackages = [ pkgs.rust-bin.stable.latest.default ];
+          })
+        ];
+      };
 
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; };
-      modules = [
-        ./nixos/configuration.nix
-        ({ pkgs, ... }: {
-          nixpkgs.overlays = [ rust-overlay.overlays.default ];
-          environment.systemPackages = [ pkgs.rust-bin.stable.latest.default ];
-        })
-      ];
+      ryzen-7 = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./nixos/configuration-desktop.nix
+          ({ pkgs, ... }: {
+            nixpkgs.overlays = [ rust-overlay.overlays.default ];
+            environment.systemPackages = [ pkgs.rust-bin.stable.latest.default ];
+          })
+        ];
+      };
     };
 
     homeConfigurations = {
-      "dylan@nixos" = home-manager.lib.homeManagerConfiguration {
+      "dylan@spreckle" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-	extraSpecialArgs = { inherit inputs; };
-	modules = [
-	  ./home-manager/home.nix
-	  # inputs.nixvim.homeManagerModules.nixvim
-	];
+        extraSpecialArgs = { inherit inputs; };
+        modules = [
+          ./home-manager/home-laptop.nix
+        ];
+      };
+      "dylan@ryzen-7" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = { inherit inputs; };
+        modules = [
+          ./home-manager/home-desktop.nix
+        ];
       };
     };
   };
