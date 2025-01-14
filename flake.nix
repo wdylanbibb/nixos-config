@@ -48,7 +48,7 @@
         ];
       };
 
-      ryzen-7 = nixpkgs.lib.nixosSystem {
+      bleistein = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
           ./nixos/configuration-desktop.nix
@@ -68,7 +68,7 @@
           ./home-manager/home-laptop.nix
         ];
       };
-      "dylan@ryzen-7" = home-manager.lib.homeManagerConfiguration {
+      "dylan@bleistein" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         extraSpecialArgs = { inherit inputs; };
         modules = [
