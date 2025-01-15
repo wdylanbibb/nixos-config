@@ -26,6 +26,8 @@
     thefuck
     bat
 
+    zoxide
+
     which
     tree
 
@@ -36,12 +38,14 @@
     usbutils
 
     vesktop
-    ghostty
     spotify
 
     rust-analyzer
 
     monaspace
+
+    zsh-forgit
+    zsh-command-time
   ];
 
   programs.git = {
@@ -53,6 +57,8 @@
   programs.firefox = {
     enable = true;
   };
+
+  programs.zoxide.enable = true;
 
   programs.zsh = {
     enable = true;
@@ -73,29 +79,17 @@
       	"rust"
       ];
     };
+    sessionVariables = {
+      TERMINAL = "wezterm";
+    };
+    shellAliases = {
+      home-manager = "home-manager --flake $(readlink /etc/nixos)#$(whoami)@$(hostname)";
+      nixos-rebuild = "nixos-rebuild --flake $(readlink /etc/nixos)#$(whoami)@$(hostname)";
+    };
   };
 
   programs.vim = {
     enable = true;
-  };
-
-  programs.ghostty = {
-    enable = true;
-    settings = {
-      font-family = "Monaspace Neon Var";
-      font-family-bold = "Monaspace Xenon Var Bold";
-      font-family-italic = "Monaspace Radon Var";
-      font-family-bold-italic = "Mondaspace Neon Var Bolt Italic";
-      font-feature = [
-        "calt"
-        "liga"
-        "ss01"
-        "ss02"
-        "ss03"
-        "ss08"
-        "ss09"
-      ];
-    };
   };
 
   # This value determines the home Manager release that your
