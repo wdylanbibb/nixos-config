@@ -29,9 +29,9 @@
   services.xserver = {
     enable = true;
     autorun = false;
-    # windowManager.herbstluftwm = {
-    #   enable = true;
+    windowManager.herbstluftwm = {
+      enable = true;
     #   configFile = ./herbstluftwm;
-    # };
+    };
   };
 }

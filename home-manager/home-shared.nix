@@ -79,9 +79,6 @@
       	"rust"
       ];
     };
-    sessionVariables = {
-      TERMINAL = "wezterm";
-    };
     shellAliases = {
       home-manager = "home-manager --flake $(readlink /etc/nixos)#$(whoami)@$(hostname)";
       nixos-rebuild = "nixos-rebuild --flake $(readlink /etc/nixos)#$(whoami)@$(hostname)";

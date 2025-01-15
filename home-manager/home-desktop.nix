@@ -1,16 +1,32 @@
-{ config, pkgs, inputs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 {
   imports = [
     ./home-shared.nix
     ./herbstluftwm.nix
+    ./polybar.nix
   ];
 
   xsession.windowManager.herbstluftwm.enable = true;
 
   home.packages = with pkgs; [
+    pipes-rs
+    rofi
+    polybar
     cozette
     wezterm
+    xdotool
   ];
+
+  programs.zsh = {
+    sessionVariables = {
+      TERMINAL = "xterm";
+    };
+  };
+
+  services.polybar = {
+    enable = true;
+  };
+
   programs.wezterm = {
     enable = true;
     extraConfig = ''
@@ -66,7 +82,6 @@
         },
         font_size = 16;
         font = wezterm.font("CozetteHiDpi"),
-        xcursor_theme = "Adwaita",
         front_end = "WebGpu",
       }'';
   };
