@@ -1,8 +1,5 @@
 { config, pkgs, inputs, ... }:
 {
-  imports = [
-    ./neovim
-  ];
   nixpkgs.config.allowUnfree = true;
 
   home.username = "dylan";
@@ -25,6 +22,7 @@
     fzf
     thefuck
     bat
+    xclip
 
     zoxide
 
@@ -79,10 +77,11 @@
       	"rust"
       ];
     };
-    shellAliases = {
-      home-manager = "home-manager --flake $(readlink /etc/nixos)#$(whoami)@$(hostname)";
-      nixos-rebuild = "nixos-rebuild --flake $(readlink /etc/nixos)#$(whoami)@$(hostname)";
-    };
+    # Seems like a bad idea...
+    # shellAliases = {
+    #   home-manager = "home-manager --flake $(readlink /etc/nixos)#$(whoami)@$(hostname)";
+    #   nixos-rebuild = "nixos-rebuild --flake $(readlink /etc/nixos)#$(whoami)@$(hostname)";
+    # };
   };
 
   programs.vim = {

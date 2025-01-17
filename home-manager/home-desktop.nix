@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, ... }:
 {
   imports = [
     ./home-shared.nix
@@ -11,20 +11,38 @@
   home.packages = with pkgs; [
     pipes-rs
     rofi
-    polybar
     cozette
     wezterm
     xdotool
+    zellij
+    maim
+    imagemagick
+    polybar-pulseaudio-control
+    strawberry
+    liquidprompt
   ];
 
   programs.zsh = {
     sessionVariables = {
-      TERMINAL = "xterm";
+      TERMINAL = "wezterm";
     };
+    initExtra = ''
+      [[ $- = *i* ]] && source $(nix path-info nixpkgs#liquidprompt)/bin/liquidprompt
+    '';
+  };
+  programs.zellij = {
+    enable = true;
+    enableZshIntegration = true;
   };
 
   services.polybar = {
+    package = pkgs.polybar.override {
+      pulseSupport = true;
+    };
     enable = true;
+  };
+  systemd.user.services.polybar = {
+    Install.WantedBy = [ "graphical-session.target" ];
   };
 
   programs.wezterm = {
@@ -80,8 +98,11 @@
           { key = "8", mods = "ALT", action = act.ActivateTab(7) },
           { key = "9", mods = "ALT", action = act.ActivateTab(8) },
         },
-        font_size = 16;
-        font = wezterm.font("CozetteHiDpi"),
+        use_fancy_tab_bar = false,
+        tab_bar_at_bottom = true,
+        hide_tab_bar_if_only_one_tab = true,
+        font_size = 8,
+        font = wezterm.font("Cozette"),
         front_end = "WebGpu",
       }'';
   };

@@ -41,6 +41,12 @@
         specialArgs = { inherit inputs; };
         modules = [
           ./nixos/configuration-laptop.nix
+          home-manager.nixosModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+
+            home-manager.users.dylan = import ./home-manager/home-laptop.nix;
+          }
           ({ pkgs, ... }: {
             nixpkgs.overlays = [ rust-overlay.overlays.default ];
             environment.systemPackages = [ pkgs.rust-bin.stable.latest.default ];
@@ -52,6 +58,12 @@
         specialArgs = { inherit inputs; };
         modules = [
           ./nixos/configuration-desktop.nix
+          home-manager.nixosModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+
+            home-manager.users.dylan = import ./home-manager/home-desktop.nix;
+          }
           ({ pkgs, ... }: {
             nixpkgs.overlays = [ rust-overlay.overlays.default ];
             environment.systemPackages = [ pkgs.rust-bin.stable.latest.default ];
@@ -60,21 +72,21 @@
       };
     };
 
-    homeConfigurations = {
-      "dylan@spreckle" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-        extraSpecialArgs = { inherit inputs; };
-        modules = [
-          ./home-manager/home-laptop.nix
-        ];
-      };
-      "dylan@bleistein" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = { inherit inputs; };
-        modules = [
-          ./home-manager/home-desktop.nix
-        ];
-      };
-    };
+    # homeConfigurations = {
+    #   "dylan@spreckle" = home-manager.lib.homeManagerConfiguration {
+    #     pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
+    #     extraSpecialArgs = { inherit inputs; };
+    #     modules = [
+    #       ./home-manager/home-laptop.nix
+    #     ];
+    #   };
+    #   "dylan@bleistein" = home-manager.lib.homeManagerConfiguration {
+    #     pkgs = nixpkgs.legacyPackages.x86_64-linux;
+    #     extraSpecialArgs = { inherit inputs; };
+    #     modules = [
+    #       ./home-manager/home-desktop.nix
+    #     ];
+    #   };
+    # };
   };
 }

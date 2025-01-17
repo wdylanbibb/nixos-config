@@ -4,7 +4,7 @@ let
 in
 {
   imports = [
-    inputs.nixvim.homeManagerModules.nixvim
+    inputs.nixvim.nixosModules.nixvim
     ./plugins/code.nix
     ./plugins/colorscheme.nix
     ./plugins/editor.nix

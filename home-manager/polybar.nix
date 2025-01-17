@@ -1,14 +1,16 @@
-{ config, lib, pkgs, input, ... }:
+{ config, lib, pkgs, inputs, ... }:
 {
   services.polybar = {
-    script = ''
-      killall -q polybar
+    # script = ''
+    #   killall -q polybar
+    #
+    #   echo "---" | tee -a /tmp/polybar1.log
+    #   polybar example 2>&1 | tee -a /tmp/polybar1.log &
+    #
+    #   echo "Bars launched..."
+    #   '';
 
-      echo "---" | tee -a /tmp/polybar1.log
-      polybar example 2>&1 | tee -a /tmp/polybar1.log &
-
-      echo "Bars launched..."
-      '';
+    script = "polybar example &";
 
     settings = {
       "colors" = {
@@ -46,7 +48,7 @@
         font-1 = "CozetteHiDpi";
 
         modules-left = "xworkspaces xwindow";
-        modules-right = "filesystem pulseaudio xkeyboard memory cpu wlan eth date";
+        modules-right = "filesystem pulseaudio memory cpu wlan eth date";
 
         cursor-click = "pointer";
         cursor-scroll = "ns-resize";
@@ -62,7 +64,7 @@
       };
 
       "module/xworkspaces" = {
-        type = "internal/workspaces";
+        type = "internal/xworkspaces";
 
         label-active = "%name%";
         label-active-background = "\${colors.background-alt}";
@@ -124,7 +126,7 @@
         label-indicator-background = "\${colors.secondary}";
       };
 
-      "module/memeory" = {
+      "module/memory" = {
         type = "internal/memory";
         interval = "2";
         format-prefix = "RAM ";
