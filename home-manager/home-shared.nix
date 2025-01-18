@@ -82,7 +82,7 @@
           exit
         fi
       fi
-      [[ $- = *i* ]] && source $(nix path-info nixpkgs#liquidprompt)/bin/liquidprompt
+      [[ $- = *i* ]] && source ${pkgs.liquidprompt}/bin/liquidprompt
     '';
     oh-my-zsh = {
       enable = true;
