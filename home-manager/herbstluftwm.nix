@@ -163,10 +163,10 @@
         xdotool windowmove "$1" 0 42
         xdotool windowsize "$1" 3200 2118
       }
-      # fix_btop_window $(herbstclient --last-arg --wait rule btopdesktop) &
-      # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_BTOP" btop &
-      # fix_pipes_window $(herbstclient --last-arg --wait rule pipesdesktop) &
-      # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_PIPES" pipes-rs &
+      fix_btop_window $(herbstclient --last-arg --wait rule btopdesktop) &
+      wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_BTOP" btop &
+      fix_pipes_window $(herbstclient --last-arg --wait rule pipesdesktop) &
+      wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_PIPES" pipes-rs &
       '';
       # fix_pipes_window $(herbstclient --last-arg --wait rule pipesdesktop) &
       # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_PIPES" pipes-rs &
