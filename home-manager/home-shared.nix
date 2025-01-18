@@ -44,6 +44,9 @@
 
     zsh-forgit
     zsh-command-time
+
+    zellij
+    liquidprompt
   ];
 
   programs.git = {
@@ -57,11 +60,30 @@
   };
 
   programs.zoxide.enable = true;
+  
+  programs.zellij = {
+    enable = true;
+    enableZshIntegration = true;
+  };
 
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    initExtra = ''
+      if [[ -z "$ZELLIJ" ]]; then
+        if [[ "$ZELLIJ_AUTO_ATTACH" == "true" ]]; then
+          zellij attach -c
+        else
+          zellij
+        fi
+
+        if [[ "$ZELLIJ_AUTO_EXIT" == "true" ]]; then
+          exit
+        fi
+      fi
+      [[ $- = *i* ]] && source $(nix path-info nixpkgs#liquidprompt)/bin/liquidprompt
+    '';
     oh-my-zsh = {
       enable = true;
       plugins = [
