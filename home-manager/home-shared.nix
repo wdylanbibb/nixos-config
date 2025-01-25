@@ -47,6 +47,8 @@
 
     zellij
     liquidprompt
+
+    gimp
   ];
 
   programs.git = {

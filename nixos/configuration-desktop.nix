@@ -22,7 +22,11 @@
     libnotify
     dunst
     pulseaudio
+    virt-manager
+    virt-top
   ];
+
+  programs.dconf.enable = true;
 
   # Enable OpenGL
   hardware.graphics = {
