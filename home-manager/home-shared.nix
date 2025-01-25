@@ -110,6 +110,15 @@
     enable = true;
   };
 
+  programs.ssh = {
+    enable = true;
+    extraConfig = ''
+      Host ilab
+        Hostname ilab.cs.rutgers.edu
+        User wdb46
+    '';
+  };
+
   # This value determines the home Manager release that your
   # configuration is compatible with. This helps avoid breakage
   # when a new home Manager release introduces backwards

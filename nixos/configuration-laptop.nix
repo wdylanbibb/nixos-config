@@ -20,8 +20,11 @@
     gnome-tweaks
     gnome-extension-manager
     vscode
+    fuse3
     # inputs.helix.packages."${pkgs.system}".helix
   ];
+
+  programs.fuse.userAllowOther = true;
 
   # List services that you want to enable:
 

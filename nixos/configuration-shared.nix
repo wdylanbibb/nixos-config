@@ -67,12 +67,16 @@
     zsh
     wget
     pciutils
+    sshfs
+    fuse3
   ];
 
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
   fonts.fontconfig.allowBitmaps = true;
+
+  programs.fuse.userAllowOther = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
