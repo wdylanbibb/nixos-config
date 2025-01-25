@@ -1,9 +1,9 @@
-{ config, lib, pkgs, inputs, ... }:
+
 {
   xsession.windowManager.herbstluftwm = {
     keybinds = {
-      # Mod4-Return = "spawn \${TERMINAL:-xterm}";
-      Mod4-Return = "spawn wezterm start zellij";
+      Mod4-Return = "spawn \${TERMINAL:-xterm}";
+      # Mod4-Return = "spawn wezterm start zellij";
       Mod4-d = "spawn rofi -show drun";
 
       Print = "spawn bash -c 'maim -s | xclip -selection clipboard -t image/png'";
@@ -151,8 +151,9 @@
       done
       herbstclient attr theme.tiling.outer_width 1
       herbstclient attr theme.background_color '#141414'
-      
+
       herbstclient set_monitors 2560x1440+640+720 640x2118+0+42 2560x678+640+42 640x2118+3200+42 2560x1440+3840+0
+      herbstclient rename_monitor 4 "VM"
       fix_btop_window() {
         herbstclient lower "$1"
         xdotool windowmove "$1" 3200 42
@@ -164,10 +165,17 @@
         xdotool windowsize "$1" 3200 2118
       }
       # fix_btop_window $(herbstclient --last-arg --wait rule btopdesktop) &
-      # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_BTOP" btop &
-      # fix_pipes_window $(herbstclient --last-arg --wait rule pipesdesktop) &
+      # sleep 3 && wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_BTOP" btop &
       # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_PIPES" pipes-rs &
+      # xterm -class "__AUTOSTART_BTOP" -e btop &
+      # xterm -calss "__AUTOSTART_PIPES" -e pipes-rs &
+      # sleep 3 && fix_btop_window $(xdotool search --class "__AUTOSTART_BTOP") && fix_pipes_window $(xdotool search --class "__AUTOSTART_PIPES")
       '';
+        # herbstclient lower "$1"
+      # fix_btop_window $(herbstclient --last-arg --wait rule btopdesktop) &
+      # fix_pipes_window $(herbstclient --last-arg --wait rule pipesdesktop) &
+      # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_BTOP" btop &
+      # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_PIPES" pipes-rs &
       # fix_pipes_window $(herbstclient --last-arg --wait rule pipesdesktop) &
       # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_PIPES" pipes-rs &
       # sleep 3 && wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_BTOP" btop &

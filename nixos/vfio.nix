@@ -18,5 +18,13 @@
       ];
     };
 
-    virtualisation.spiceUSBRedirection.enable = true;
+    users.groups.libvirtd.members = [ "dylan" ];
+    virtualisation = {
+      spiceUSBRedirection.enable = true;
+      libvirtd = {
+        enable = true;
+        onBoot = "start";
+        qemu.ovmf.enable = true;
+      };
+    };
   }

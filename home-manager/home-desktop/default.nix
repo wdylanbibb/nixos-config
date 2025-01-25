@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 {
   imports = [
-    ./home-shared.nix
+    ../home-shared.nix
     ./herbstluftwm.nix
     ./polybar.nix
   ];
@@ -18,6 +18,7 @@
     imagemagick
     polybar-pulseaudio-control
     strawberry
+    moonlight-qt
   ];
 
   programs.zsh = {

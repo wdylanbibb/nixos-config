@@ -62,7 +62,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
-            home-manager.users.dylan = import ./home-manager/home-desktop.nix;
+            home-manager.users.dylan = import ./home-manager/home-desktop;
           }
           ({ pkgs, ... }: {
             nixpkgs.overlays = [ rust-overlay.overlays.default ];
