@@ -14,6 +14,14 @@
 
   networking.hostName = "bleistein"; # Define your hostname.
 
+  boot.supportedFilesystems = [ "ntfs" ];
+
+  fileSystems."/mnt/Data" = {
+    device = "/dev/disk/by-uuid/423E36095F33BFBE";
+    fsType = "ntfs-3g";
+    options = [ "rw" "uid=1000" ];
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -24,7 +32,14 @@
     pulseaudio
     virt-manager
     virt-top
+    ntfs3g
   ];
+
+  services.xserver.dpi = 96;
+  environment.variables = {
+    GDK_SCALE = "1";
+    GDK_DPI_SCALE = "1";
+  };
 
   programs.dconf.enable = true;
 
