@@ -32,9 +32,15 @@
       url = "github:nix-community/nixvim/nixos-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Zellij flake: https://github.com/a-kenji/zellij-nix
+    zellij-nix = {
+      url = "github:a-kenji/zellij-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, rust-overlay, nixvim, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, rust-overlay, nixvim, zellij-nix, ... }@inputs: {
     # 
     nixosConfigurations = {
       spreckle = nixpkgs.lib.nixosSystem {
@@ -42,6 +48,7 @@
         modules = [
           ./nixos/configuration-laptop.nix
           home-manager.nixosModules.home-manager {
+            home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
@@ -59,6 +66,7 @@
         modules = [
           ./nixos/configuration-desktop.nix
           home-manager.nixosModules.home-manager {
+            home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 

@@ -69,6 +69,8 @@
     pciutils
     sshfs
     fuse3
+    inputs.zellij-nix.packages."${pkgs.system}".zellij
+    # inputs.zellij-nix.plugins."${pkgs.system}".multitask
   ];
 
   programs.zsh.enable = true;

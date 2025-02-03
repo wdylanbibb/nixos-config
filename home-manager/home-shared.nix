@@ -1,9 +1,14 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, lib, ... }:
 {
   nixpkgs.config.allowUnfree = true;
 
   home.username = "dylan";
   home.homeDirectory = "/home/dylan";
+
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+  };
 
   home.packages = with pkgs; [
     neofetch
@@ -45,7 +50,6 @@
     zsh-forgit
     zsh-command-time
 
-    zellij
     liquidprompt
 
     gimp
@@ -65,19 +69,68 @@
   
   programs.zellij = {
     enable = true;
-    enableZshIntegration = true;
+    settings = {
+      plugins = {
+        autolock = {
+          _props = {
+            location = "https://github.com/fresh2dev/zellij-autolock/releases/download/0.2.2/zellij-autolock.wasm";
+          };
+          is_enabled = false;
+        };
+        multitask = {
+          _props = {
+            location = "file:${inputs.zellij-nix.plugins.${pkgs.system}.multitask}/bin/multitask.wasm";
+          };
+          shell = "${pkgs.zsh}/bin/zsh";
+        };
+      };
+      load_plugins = {
+        "autolock" = [];
+      };
+    };
   };
+  # xdg.configFile."zellij/layouts/layout_file.kdl" = {
+  #   enable = true;
+  #   text = lib.hm.generators.toKDL { } {
+  #     layout = {
+  #       tab = {
+  #         _props = {
+  #           name = "ILab Session";
+  #           cwd = "~/dev/ilab";
+  #           focus = true;
+  #         };
+  #         "pane size=1 borderless=true".plugin._props.location = "zellij:tab-bar";
+  #         "pane split_direction=\"Vertical\"" = {
+  #           "pane size=\"15%\" split_direction=\"Horizontal\"" = {
+  #             pane.plugin._props.location = "zellij:strider";
+  #             "pane command=\"sshfs\"" = {
+  #               args = [ "-oallow_other" "ilab:/common/home/wdb46" "." ];
+  #             };
+  #           };
+  #           pane = {
+  #             _props.command = "ssh";
+  #             args = [ "ilab" ];
+  #           };
+  #         };
+  #       };
+  #     };
+  #   };
+  # };
+  
 
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    localVariables = {
+      ZELLIJ_AUTO_EXIT = true;
+    };
     initExtra = ''
       if [[ -z "$ZELLIJ" ]]; then
         if [[ "$ZELLIJ_AUTO_ATTACH" == "true" ]]; then
           zellij attach -c
         else
-          zellij
+          zellij -l welcome
         fi
 
         if [[ "$ZELLIJ_AUTO_EXIT" == "true" ]]; then

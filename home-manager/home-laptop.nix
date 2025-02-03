@@ -11,6 +11,7 @@
     enableZshIntegration = true;
     installVimSyntax = true;
     settings = {
+      font-size = "10";
       font-family = "Monaspace Neon Var";
       font-family-bold = "Monaspace Neon Var Bold";
       font-family-italic = "Monaspace Radon Var Medium";
