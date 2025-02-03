@@ -28,6 +28,8 @@
     thefuck
     bat
     xclip
+    lazygit
+    git-extras
 
     zoxide
 
@@ -59,6 +61,22 @@
     enable = true;
     userName = "Dylan Bibb";
     userEmail = "wdylanbibb@gmail.com";
+    delta = {
+      enable = true;
+      options = {
+        side-by-side = true;
+      };
+    };
+  };
+
+  programs.lazygit = {
+    enable = true;
+    settings = {
+      git.paging = {
+        colorArg = "always";
+        pager = "delta --paging=never -s";
+      };
+    };
   };
 
   programs.firefox = {
@@ -142,6 +160,7 @@
     oh-my-zsh = {
       enable = true;
       plugins = [
+        "ssh-agent"
         "git"
       	"thefuck"
       	"aliases"
