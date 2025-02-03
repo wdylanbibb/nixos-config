@@ -51,7 +51,15 @@
       Mod4-p = "pseudotile toggle";
 
       # cycle through layouts
-      Mod4-space = "or , and . compare tags.focus.curframe_wcount = 2 . cycle_layout +1 verticle horizontal max vertical grid , cycle_layout +1";
+      # Mod4-space = "or , and . compare tags.focus.curframe_wcount = 2 . cycle_layout 1 verticle horizontal max vertical grid , cycle_layout 1";
+      Mod4-space = "cycle_layout 1 horizontal max vertical grid";
+
+      # focus
+      Mod4-BackSpace = "cycle_monitor";
+      Mod4-Tab = "cycle_all 1";
+      Mod4-Shift-Tab = "cycle_all -1";
+      Mod4-c = "cycle";
+      Mod4-i = "jumpto urgent";
 
       # Tag switching for monitor 1
       Mod4-1 = "or CASE and . compare monitors.focus.index = 0 . use 1";
@@ -59,17 +67,18 @@
       Mod4-3 = "or CASE and . compare monitors.focus.index = 0 . use 3";
       Mod4-4 = "or CASE and . compare monitors.focus.index = 0 . use 4";
       Mod4-5 = "or CASE and . compare monitors.focus.index = 0 . use 5";
-      Mod4-Shift-1 = "or CASE and . compare monitors.focus.index = 0 . move 1";
-      Mod4-Shift-2 = "or CASE and . compare monitors.focus.index = 0 . move 2";
-      Mod4-Shift-3 = "or CASE and . compare monitors.focus.index = 0 . move 3";
-      Mod4-Shift-4 = "or CASE and . compare monitors.focus.index = 0 . move 4";
-      Mod4-Shift-5 = "or CASE and . compare monitors.focus.index = 0 . move 5";
+      Mod4-Shift-1 = "move 1";
+      Mod4-Shift-2 = "move 2";
+      Mod4-Shift-3 = "move 3";
+      Mod4-Shift-4 = "move 4";
+      Mod4-Shift-5 = "move 5";
 
       # Swap monitor positions of VM and monitor 0 (main display)
       # Need to spawn bash process because otherwise awk commands get cached
       Mod4-v = ''spawn bash -c "herbstclient chain , move_monitor 0 \$(herbstclient monitor_rect VM | awk '{print \$3 \"x\" \$4 \"+\" \$1 \"+\" \$2}') , \
         move_monitor VM \$(herbstclient monitor_rect 0 | awk '{print \$3 \"x\" \$4 \"+\" \$1 \"+\" \$2}') , \
         focus_monitor \$(if [[ \"\$(herbstclient monitor_rect VM | awk '{print \$1}')\" == \"3840\" ]]; then echo VM; else echo 0; fi)"'';
+      Mod4-Shift-v = "shift_to_monitor VM";
     };
     mousebinds = {
       Mod4-B1 = "move";
@@ -121,6 +130,19 @@
       # herbstclient emit_hook reload
       ''
       xsetroot -solid '#000000'
+      herbstclient attr theme.tiling.reset 1
+      herbstclient attr theme.floating.reset 1
+      herbstclient attr theme.fullscreen.reset 1
+      herbstclient set frame_border_active_color '#000000'
+      herbstclient set frame_border_normal_color '#333333'
+      herbstclient set frame_bg_normal_color '#FFFF00'
+      herbstclient set frame_bg_active_color '#333333'
+      herbstclient set frame_border_width 1
+      herbstclient set show_frame_decorations 'focused_if_multiple'
+      herbstclient set frame_bg_transparent on
+      # herbstclient set frame_transparent_width 5
+      herbstclient set frame_gap 0
+
       herbstclient attr theme.title_height 10
       herbstclient attr theme.title_when multiple_tabs
       herbstclient attr theme.title_font 'Cozette' # example using Xft
@@ -145,12 +167,26 @@
       herbstclient attr theme.urgent.inner_color '#00FF00'
       herbstclient attr theme.normal.inner_color '#333333'
 
+      # herbstclient attr theme.fullscreen.title_height 15
+      # herbstclient attr theme.fullscreen.title_when multiple_tabs
+      # herbstclient attr theme.fullscreen.title_font 'Iosevka Nerd Font Mono:pixelsize=14' # example using Xft
+      # # herbstclient attr theme.title_font '-*-fixed-medium-r-*-*-13-*-*-*-*-*-*-*'
+      # herbstclient attr theme.fullscreen.title_depth 3 # space below the title's baseline
+      # herbstclient attr theme.fullscreen.title_color '#ffffff'
+      # herbstclient attr theme.fullscreen.normal.title_color '#898989'
+      # copy inner color to outer_color
       for state in active urgent normal; do
         herbstclient substitute C theme.''${state}.inner_color \
           attr theme.''${state}.outer_color C
       done
       herbstclient attr theme.tiling.outer_width 1
       herbstclient attr theme.background_color '#141414'
+
+      herbstclient set window_gap 0
+      herbstclient set frame_padding 0
+      herbstclient set smart_window_surroundings off
+      herbstclient set smart_frame_surroundings on
+      herbstclient set mouse_recenter_gap 0
 
       herbstclient set_monitors 2560x1440+640+720 640x2118+0+42 2560x678+640+42 640x2118+3200+42 2560x1440+3840+0
       herbstclient rename_monitor 4 "VM"
