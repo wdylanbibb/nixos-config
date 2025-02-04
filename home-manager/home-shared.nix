@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, lib, ... }:
+{ config, osConfig, pkgs, inputs, lib, ... }:
 {
   nixpkgs.config.allowUnfree = true;
 
@@ -105,35 +105,42 @@
       load_plugins = {
         "autolock" = [];
       };
+      keybinds = {
+        normal = {
+          "bind \"Ctrl l\"".Run = { 
+            _args = [ "zellij" "run" "--floating" "--" "lazygit" ];
+            close_on_exit = true;
+          };
+        };
+      };
     };
   };
-  # xdg.configFile."zellij/layouts/layout_file.kdl" = {
-  #   enable = true;
-  #   text = lib.hm.generators.toKDL { } {
-  #     layout = {
-  #       tab = {
-  #         _props = {
-  #           name = "ILab Session";
-  #           cwd = "~/dev/ilab";
-  #           focus = true;
-  #         };
-  #         "pane size=1 borderless=true".plugin._props.location = "zellij:tab-bar";
-  #         "pane split_direction=\"Vertical\"" = {
-  #           "pane size=\"15%\" split_direction=\"Horizontal\"" = {
-  #             pane.plugin._props.location = "zellij:strider";
-  #             "pane command=\"sshfs\"" = {
-  #               args = [ "-oallow_other" "ilab:/common/home/wdb46" "." ];
-  #             };
-  #           };
-  #           pane = {
-  #             _props.command = "ssh";
-  #             args = [ "ilab" ];
-  #           };
-  #         };
-  #       };
-  #     };
-  #   };
-  # };
+  xdg.configFile."zellij/layouts/nix_config.kdl" = {
+    enable = true;
+    text = lib.hm.generators.toKDL { } {
+      layout = {
+        tab = {
+          _props = {
+            name = "Nixos Config";
+            cwd = "/etc/nixos";
+            focus = true;
+          };
+          "pane size=1 borderless=true".plugin._props.location = "zellij:tab-bar";
+          "pane split_direction=\"Vertical\"" = {
+            "pane split_direction=\"Horizontal\"" = {
+              "pane split_direction=\"Vertical\" command=\"nvim\"" = {
+                args = [ "flake.nix" ];
+              };
+              "pane size=\"15%\" command=\"sudo\"" = {
+                args = [ "nixos-rebuild" "--flake" ".#${osConfig.networking.hostName}" "switch" ];
+              };
+            };
+            "pane size=\"15%\"".plugin._props.location = "zellij:strider";
+          };
+        };
+      };
+    };
+  };
   
 
   programs.zsh = {
