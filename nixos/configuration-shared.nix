@@ -85,10 +85,10 @@
 
   services.blueman.enable = true;
 
-  programs.ssh.extraConfig = ''
-    GSSAPIAuthentication yes
-    GSSAPIDelegateCredentials yes
-  '';
+  # programs.ssh.extraConfig = ''
+  #   GSSAPIAuthentication yes
+  #   GSSAPIDelegateCredentials yes
+  # '';
 
   security.krb5 = {
     enable = true;
