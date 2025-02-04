@@ -29,10 +29,7 @@
     bat
     xclip
     lazygit
-<<<<<<< HEAD
     git-extras
-=======
->>>>>>> 9dfd325c081feeb17fac1ed5eedd77b5c04582fd
 
     zoxide
 
