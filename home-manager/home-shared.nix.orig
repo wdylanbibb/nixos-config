@@ -29,7 +29,10 @@
     bat
     xclip
     lazygit
+<<<<<<< HEAD
     git-extras
+=======
+>>>>>>> 9dfd325c081feeb17fac1ed5eedd77b5c04582fd
 
     zoxide
 
@@ -64,7 +67,11 @@
     delta = {
       enable = true;
       options = {
+<<<<<<< HEAD
         side-by-side = true;
+=======
+        "side-by-side" = true;
+>>>>>>> 9dfd325c081feeb17fac1ed5eedd77b5c04582fd
       };
     };
   };
@@ -74,7 +81,11 @@
     settings = {
       git.paging = {
         colorArg = "always";
+<<<<<<< HEAD
         pager = "delta --paging=never -s";
+=======
+        pager = "delta --paging=never";
+>>>>>>> 9dfd325c081feeb17fac1ed5eedd77b5c04582fd
       };
     };
   };
@@ -115,6 +126,34 @@
       };
     };
   };
+  xdg.configFile."zellij/layouts/nix_config.kdl" = {
+    enable = true;
+    text = lib.hm.generators.toKDL { } {
+      layout = {
+        tab = {
+          _props = {
+            name = "Nixos Config";
+            cwd = "/etc/nixos";
+            focus = true;
+          };
+          "pane size=1 borderless=true".plugin._props.location = "zellij:tab-bar";
+          "pane split_direction=\"Vertical\"" = {
+            "pane split_direction=\"Horizontal\"" = {
+              "pane split_direction=\"Vertical\" command=\"nvim\"" = {
+                args = [ "flake.nix" ];
+              };
+              "pane size=\"15%\" command=\"sudo\"" = {
+                args = [ "nixos-rebuild" "--flake" ".#${osConfig.networking.hostName}" "switch" ];
+              };
+            };
+            "pane size=\"15%\"".plugin._props.location = "zellij:strider";
+          };
+        };
+      };
+    };
+  };
+<<<<<<< HEAD
+=======
   xdg.configFile."zellij/layouts/nixos_config.kdl" = {
     enable = true;
     text = lib.hm.generators.toKDL { } {
@@ -137,6 +176,8 @@
       };
     };
   };
+>>>>>>> 9dfd325c081feeb17fac1ed5eedd77b5c04582fd
+  
 
   programs.zsh = {
     enable = true;
