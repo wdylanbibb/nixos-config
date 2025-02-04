@@ -85,6 +85,29 @@
 
   services.blueman.enable = true;
 
+  programs.ssh.extraConfig = ''
+    GSSAPIAuthentication yes
+    GSSAPIDelegateCredentials yes
+  '';
+
+  security.krb5 = {
+    enable = true;
+    settings = {
+      libdefaults = {
+        default_realm = "CS.RUTGERS.EDU";
+        noaddresses = true;
+        forwardable = true;
+        renew_lifetime = "365d";
+        default_ccache_name = "/tmp/krb5cc_%{uid}";
+      };
+
+      realms."CS.RUTGERS.EDU" = {
+        kdc = "https://services.cs.rutgers.edu/KdcProxy";
+        http_anchors = "FILE:/home/dylan/Downloads/letsencrypt.pem";
+      };
+    };
+  };
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

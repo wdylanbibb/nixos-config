@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, lib, ... }:
+{ config, osConfig, pkgs, inputs, lib, ... }:
 {
   nixpkgs.config.allowUnfree = true;
 
@@ -28,6 +28,7 @@
     thefuck
     bat
     xclip
+    lazygit
 
     zoxide
 
@@ -59,6 +60,22 @@
     enable = true;
     userName = "Dylan Bibb";
     userEmail = "wdylanbibb@gmail.com";
+    delta = {
+      enable = true;
+      options = {
+        "side-by-side" = true;
+      };
+    };
+  };
+
+  programs.lazygit = {
+    enable = true;
+    settings = {
+      git.paging = {
+        colorArg = "always";
+        pager = "delta --paging=never";
+      };
+    };
   };
 
   programs.firefox = {
@@ -89,33 +106,28 @@
       };
     };
   };
-  # xdg.configFile."zellij/layouts/layout_file.kdl" = {
-  #   enable = true;
-  #   text = lib.hm.generators.toKDL { } {
-  #     layout = {
-  #       tab = {
-  #         _props = {
-  #           name = "ILab Session";
-  #           cwd = "~/dev/ilab";
-  #           focus = true;
-  #         };
-  #         "pane size=1 borderless=true".plugin._props.location = "zellij:tab-bar";
-  #         "pane split_direction=\"Vertical\"" = {
-  #           "pane size=\"15%\" split_direction=\"Horizontal\"" = {
-  #             pane.plugin._props.location = "zellij:strider";
-  #             "pane command=\"sshfs\"" = {
-  #               args = [ "-oallow_other" "ilab:/common/home/wdb46" "." ];
-  #             };
-  #           };
-  #           pane = {
-  #             _props.command = "ssh";
-  #             args = [ "ilab" ];
-  #           };
-  #         };
-  #       };
-  #     };
-  #   };
-  # };
+  xdg.configFile."zellij/layouts/nixos_config.kdl" = {
+    enable = true;
+    text = lib.hm.generators.toKDL { } {
+      layout = {
+        tab = {
+          _props = {
+            name = "Nixos Config";
+            cwd = "/etc/nixos";
+            focus = true;
+          };
+          "pane size=1 borderless=true".plugin._props.location = "zellij:tab-bar";
+          "pane split_direction=\"Vertical\"" = {
+            # "pane size=\"15%\"".plugin._props.location = "zellij:strider";
+            "pane split_direction=\"Horizontal\"" = {
+              pane.edit = "flake.nix";
+              "pane size=\"15%\" command=\"sudo\"".args = [ "nixos-rebuild" "switch" "--flake" ".#${osConfig.networking.hostName}" ];
+            };
+          };
+        };
+      };
+    };
+  };
   
 
   programs.zsh = {
@@ -142,6 +154,7 @@
     oh-my-zsh = {
       enable = true;
       plugins = [
+        "ssh-agent"
         "git"
       	"thefuck"
       	"aliases"
