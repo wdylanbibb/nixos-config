@@ -144,7 +144,7 @@
       herbstclient set frame_gap 0
 
       herbstclient attr theme.title_height 10
-      herbstclient attr theme.title_when multiple_tabs
+      herbstclient attr theme.title_when always
       herbstclient attr theme.title_font 'Cozette' # example using Xft
       # herbstclient attr theme.title_font '-*-fixed-medium-r-*-*-13-*-*-*-*-*-*-*'
       herbstclient attr theme.title_depth 3 # space below the title's baseline
