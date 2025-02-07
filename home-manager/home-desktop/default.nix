@@ -11,7 +11,6 @@
   home.packages = with pkgs; [
     pipes-rs
     rofi
-    cozette
     wezterm
     xdotool
     maim

@@ -33,6 +33,13 @@
     virt-manager
     virt-top
     ntfs3g
+    rxvt-unicode
+  ];
+
+  fonts.packages = with pkgs; [
+    (nerdfonts.override { fonts = [ "FiraCode" ]; })
+    fira-code
+    cozette
   ];
 
   services.xserver.dpi = 96;
