@@ -1,3 +1,12 @@
+# TODO:
+#  * Declarative Virtual Machine creation
+#     * https://github.com/AshleyYakeley/NixVirt
+#  * Impermanence
+#     * https://grahamc.com/blog/erase-your-darlings/
+#     * https://grahamc.com/blog/erase-your-darlings/
+#     * https://www.reddit.com/r/NixOS/comments/u09cz9/comment/i44jtnm/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+
+
 # Designed around the standard NixOS config from
 # https://github.com/Misterio77/nix-starter-configs
 # Built using the NixOS and flakes book from
@@ -79,22 +88,5 @@
         ];
       };
     };
-
-    # homeConfigurations = {
-    #   "dylan@spreckle" = home-manager.lib.homeManagerConfiguration {
-    #     pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-    #     extraSpecialArgs = { inherit inputs; };
-    #     modules = [
-    #       ./home-manager/home-laptop.nix
-    #     ];
-    #   };
-    #   "dylan@bleistein" = home-manager.lib.homeManagerConfiguration {
-    #     pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    #     extraSpecialArgs = { inherit inputs; };
-    #     modules = [
-    #       ./home-manager/home-desktop.nix
-    #     ];
-    #   };
-    # };
   };
 }

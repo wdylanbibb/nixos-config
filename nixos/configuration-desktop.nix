@@ -15,6 +15,8 @@
   networking.hostName = "bleistein"; # Define your hostname.
 
   boot.supportedFilesystems = [ "ntfs" ];
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelParams = [ "CONFIG_MEDIA_USB_SUPPORT=y" "CONFIG_USB_VIDEO_CLASS=y" ];
 
   fileSystems."/mnt/Data" = {
     device = "/dev/disk/by-uuid/423E36095F33BFBE";
@@ -34,6 +36,12 @@
     virt-top
     ntfs3g
     rxvt-unicode
+
+    cheese
+    v4l-utils
+
+    kitty
+    tdf
   ];
 
   fonts.packages = with pkgs; [
@@ -102,7 +110,14 @@
     nvidiaSettings = true;
 
     # Optionally, you may need to select the appropiate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    # package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+       version = "570.86.16"; # use new 570 drivers
+       sha256_64bit = "sha256-RWPqS7ZUJH9JEAWlfHLGdqrNlavhaR1xMyzs8lJhy9U=";
+       openSha256 = "sha256-DuVNA63+pJ8IB7Tw2gM4HbwlOh1bcDg2AN2mbEU9VPE=";
+       settingsSha256 = "sha256-9rtqh64TyhDF5fFAYiWl3oDHzKJqyOW3abpcf2iNRT8=";
+       usePersistenced = false;
+    };
   };
 
   # List services that you want to enable:
