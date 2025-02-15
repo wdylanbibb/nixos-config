@@ -2,14 +2,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration-desktop.nix
       ./configuration-shared.nix
-      ./vfio.nix
     ];
 
   networking.hostName = "bleistein"; # Define your hostname.
@@ -42,6 +41,8 @@
 
     kitty
     tdf
+
+    inputs.helix.packages."${pkgs.system}".helix
   ];
 
   fonts.packages = with pkgs; [
@@ -132,6 +133,61 @@
     windowManager.herbstluftwm = {
       enable = true;
     #   configFile = ./herbstluftwm;
+    };
+  };
+  
+  boot = {
+    initrd.kernelModules = [
+      "vfio_pci"
+      "vfio"
+      "vfio_iommu_type1"
+
+      "nvidia"
+      "nvidia_modeset"
+      "nvidia_uvm"
+      "nvidia_drm"
+    ];
+
+    kernelParams = [
+      # enable IOMMU
+      "amd_iommu=on"
+      "vfio-pci.ids=10de:2504,10de:228e"
+    ];
+  };
+
+  users.groups.libvirtd.members = [ "dylan" ];
+  virtualisation = {
+    spiceUSBRedirection.enable = true;
+    libvirt = {
+      enable = true;
+      connections."qemu:///system" = {
+         domains = [
+          {
+            definition = ./libvirt/win10.xml;
+            active = true;
+          }
+        ]; 
+        networks = [
+          {
+            definition = ./libvirt/net-default.xml;
+            active = true;
+          }
+        ];
+        pools = [
+          {
+            definition = ./libvirt/pool-default.xml;
+            active = true;
+            # volumes = [{
+            #   present = true;
+            #
+            # }];
+          }
+        ];
+      };
+    };
+    libvirtd = {
+      onBoot = "start";
+      qemu.ovmf.enable = true;
     };
   };
 }

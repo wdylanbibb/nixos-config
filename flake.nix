@@ -19,7 +19,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     # Helix editor, use the master branch
-    # helix.url = "github:helix-editor/helix/master";
+    helix.url = "github:helix-editor/helix/master";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
@@ -47,10 +47,15 @@
       url = "github:a-kenji/zellij-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Flake to declare virtual machines: https://flakehub.com/flake/AshleyYakeley/NixVirt?view=usage
+    nix-virt = {
+      url = "https://flakehub.com/f/AshleyYakeley/NixVirt/0.5.0.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, rust-overlay, nixvim, zellij-nix, ... }@inputs: {
-    # 
+  outputs = { self, nixpkgs, home-manager, rust-overlay, nixvim, zellij-nix, nix-virt, ... }@inputs: {
     nixosConfigurations = {
       spreckle = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
@@ -73,6 +78,7 @@
       bleistein = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
+          nix-virt.nixosModules.default
           ./nixos/configuration-desktop.nix
           home-manager.nixosModules.home-manager {
             home-manager.extraSpecialArgs = { inherit inputs; };
