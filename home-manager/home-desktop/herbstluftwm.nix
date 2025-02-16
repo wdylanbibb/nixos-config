@@ -1,4 +1,4 @@
-
+{ pkgs, ... }:
 {
   xsession.windowManager.herbstluftwm = {
     keybinds = {
@@ -190,31 +190,34 @@
 
       herbstclient set_monitors 2560x1440+640+720 640x2118+0+42 2560x678+640+42 640x2118+3200+42 2560x1440+3840+0
       herbstclient rename_monitor 4 "VM"
-      fix_btop_window() {
-        herbstclient lower "$1"
-        xdotool windowmove "$1" 3200 42
-        xdotool windowsize "$1" 640 2118
-      }
-      fix_pipes_window() {
-        herbstclient lower "$1"
-        xdotool windowmove "$1" 0 42
-        xdotool windowsize "$1" 3200 2118
-      }
-      # fix_btop_window $(herbstclient --last-arg --wait rule btopdesktop) &
-      # sleep 3 && wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_BTOP" btop &
-      # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_PIPES" pipes-rs &
-      # xterm -class "__AUTOSTART_BTOP" -e btop &
-      # xterm -calss "__AUTOSTART_PIPES" -e pipes-rs &
-      # sleep 3 && fix_btop_window $(xdotool search --class "__AUTOSTART_BTOP") && fix_pipes_window $(xdotool search --class "__AUTOSTART_PIPES")
+
+      ${pkgs.bash}/bin/bash ${xdg.configFile}/herbstluftwm/bg_programs &
       '';
-        # herbstclient lower "$1"
-      # fix_btop_window $(herbstclient --last-arg --wait rule btopdesktop) &
-      # fix_pipes_window $(herbstclient --last-arg --wait rule pipesdesktop) &
-      # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_BTOP" btop &
-      # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_PIPES" pipes-rs &
-      # fix_pipes_window $(herbstclient --last-arg --wait rule pipesdesktop) &
-      # wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_PIPES" pipes-rs &
-      # sleep 3 && wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_BTOP" btop &
-      # '';
+  };
+  xdg.configFile."herbstluftwm/bg_programs" = {
+    enable = true;
+    text = ''
+      ${pkgs.procps}/bin/pkill -x pipes-rs
+      ${pkgs.procps}/bin/pkill -x btop
+
+      fix_btop_window() {
+        ${pkgs.herbstluftwm}/bin/herbstclient lower $1
+        ${pkgs.xdotool}/bin/xdotool windowmove $1 3200 42
+        ${pkgs.xdotool}/bin/xdotool windowsize $1 640 2118
+      }
+
+      fix_pipes_window() {
+        ${pkgs.herbstluftwm}/bin/herbstclient lower $1
+        ${pkgs.xdotool}/bin/xdotool windowmove $1 0 42
+        ${pkgs.xdotool}/bin/xdotool windowsize $1 3200 2118
+      }
+
+      fix_btop_window $(${pkgs.herbstluftwm}/bin/herbstclient --last-arg --wait rule btopdesktop) &
+      fix_pipes_window $(${pkgs.herbstluftwm}/bin/herbstclient --last-arg --wait rule pipesdesktop) &
+
+      ${pkgs.wezterm}/bin/wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_BTOP" ${pkgs.btop}/bin/btop &
+      PID1=$!
+      ${pkgs.wezterm}/bin/wezterm --config window_padding=\{left=0,right=0,top=0,bottom=0\} --config enable_tab_bar=false --config font_size=10 start --class "__AUTOSTART_PIPES" ${pkgs.pipes-rs}/bin/pipes-rs -k=curved -p=10
+    '';
   };
 }
