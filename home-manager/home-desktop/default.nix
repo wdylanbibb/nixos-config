@@ -51,4 +51,11 @@
         front_end = "WebGpu",
       }'';
   };
+
+  home.file = {
+    Music.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/Music";
+    Pictures.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/Pictures";
+    School.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/School";
+    dev.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/Dev";
+  };
 }

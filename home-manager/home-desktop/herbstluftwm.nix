@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   xsession.windowManager.herbstluftwm = {
     keybinds = {
@@ -191,7 +191,7 @@
       herbstclient set_monitors 2560x1440+640+720 640x2118+0+42 2560x678+640+42 640x2118+3200+42 2560x1440+3840+0
       herbstclient rename_monitor 4 "VM"
 
-      ${pkgs.bash}/bin/bash ${xdg.configFile}/herbstluftwm/bg_programs &
+      ${pkgs.bash}/bin/bash ${config.xdg.configHome}/herbstluftwm/bg_programs &
       '';
   };
   xdg.configFile."herbstluftwm/bg_programs" = {
