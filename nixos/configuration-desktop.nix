@@ -2,26 +2,80 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
-
+{ config, lib, pkgs, inputs, modulesPath, ... }:
 {
   imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration-desktop.nix
+    [
       ./configuration-shared.nix
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   networking.hostName = "bleistein"; # Define your hostname.
 
-  boot.supportedFilesystems = [ "ntfs" ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.kernelParams = [ "CONFIG_MEDIA_USB_SUPPORT=y" "CONFIG_USB_VIDEO_CLASS=y" ];
+  boot = {
+    supportedFilesystems = [ "ntfs" ];
+    kernelPackages = pkgs.linuxPackages_latest;
+    initrd = {
+      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+      kernelModules = [
+        "vfio_pci"
+        "vfio"
+        "vfio_iommu_type1"
 
+        "nvidia"
+        "nvidia_modeset"
+        "nvidia_uvm"
+        "nvidia_drm"
+      ];
+    };
+    kernelParams = [
+      # enable IOMMU
+      "amd_iommu=on"
+      "vfio-pci.ids=10de:2504,10de:228e"
+    ];
+    kernelModules = [ "kvm-amd" ];
+    extraModulePackages = [ ];
+  };
+
+  # boot.supportedFilesystems = [ "ntfs" ];
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
+  #
+  # boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+  # boot.initrd.kernelModules = [ ];
+  # boot.kernelModules = [ "kvm-amd" ];
+  # boot.extraModulePackages = [ ];
+
+  fileSystems."/" =
+    { device = "/dev/disk/by-uuid/58e94931-5eae-45d0-ab41-dad488f92888";
+      fsType = "ext4";
+    };
+
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/D347-8A32";
+      fsType = "vfat";
+      options = [ "fmask=0077" "dmask=0077" ];
+    };
+  
   fileSystems."/mnt/Data" = {
     device = "/dev/disk/by-uuid/423E36095F33BFBE";
     fsType = "ntfs-3g";
     options = [ "rw" "uid=1000" ];
   };
+
+  swapDevices =
+    [ { device = "/dev/disk/by-uuid/2e4569b7-bf7a-4d9d-a1fa-b10221f35470"; }
+    ];
+
+  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+  # (the default) this is the recommended approach. When using systemd-networkd it's
+  # still possible to use this option, but it's recommended to use it in conjunction
+  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+  networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp8s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlp7s0.useDHCP = lib.mkDefault true;
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -136,24 +190,6 @@
     };
   };
   
-  boot = {
-    initrd.kernelModules = [
-      "vfio_pci"
-      "vfio"
-      "vfio_iommu_type1"
-
-      "nvidia"
-      "nvidia_modeset"
-      "nvidia_uvm"
-      "nvidia_drm"
-    ];
-
-    kernelParams = [
-      # enable IOMMU
-      "amd_iommu=on"
-      "vfio-pci.ids=10de:2504,10de:228e"
-    ];
-  };
 
   users.groups.libvirtd.members = [ "dylan" ];
   virtualisation = {

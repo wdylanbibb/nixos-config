@@ -1,8 +1,9 @@
 # TODO:
 #  * Declarative Virtual Machine creation
+#     * Mostly done, just need to find a way to link vm images from Data drive
 #     * https://github.com/AshleyYakeley/NixVirt
 #  * Impermanence
-#     * https://grahamc.com/blog/erase-your-darlings/
+#     * https://nixos.wiki/wiki/Impermanence
 #     * https://grahamc.com/blog/erase-your-darlings/
 #     * https://www.reddit.com/r/NixOS/comments/u09cz9/comment/i44jtnm/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
 
