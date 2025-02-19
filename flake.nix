@@ -20,7 +20,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     # Helix editor, use the master branch
-    helix.url = "github:helix-editor/helix/master";
+    # helix.url = "github:helix-editor/helix/master";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";

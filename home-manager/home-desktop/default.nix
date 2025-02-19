@@ -53,9 +53,15 @@
   };
 
   home.file = {
-    Music.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/Music";
-    Pictures.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/Pictures";
-    School.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/School";
-    dev.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/Dev";
+    Desktop.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Desktop";
+    Dev.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Dev";
+    Documents.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Documents";
+    Downloads.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Downloads";
+    Music.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Music";
+    Pictures.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Pictures";
+    Public.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Public";
+    School.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/School";
+    Templates.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Templates";
+    Videos.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Videos";
   };
 }

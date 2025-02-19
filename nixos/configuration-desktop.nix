@@ -13,7 +13,7 @@
   networking.hostName = "bleistein"; # Define your hostname.
 
   boot = {
-    supportedFilesystems = [ "ntfs" ];
+    supportedFilesystems = [ ];
     kernelPackages = pkgs.linuxPackages_latest;
     initrd = {
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
@@ -37,34 +37,40 @@
     extraModulePackages = [ ];
   };
 
-  # boot.supportedFilesystems = [ "ntfs" ];
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
-  #
-  # boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-  # boot.initrd.kernelModules = [ ];
-  # boot.kernelModules = [ "kvm-amd" ];
-  # boot.extraModulePackages = [ ];
-
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/58e94931-5eae-45d0-ab41-dad488f92888";
-      fsType = "ext4";
+    { device = "/dev/disk/by-label/NIXROOT";
+      fsType = "btrfs";
+      options = [ "subvol=root" "compress=zstd" "noatime" ];
+    };
+
+  fileSystems."/home" =
+    { device = "/dev/disk/by-label/NIXROOT";
+      fsType = "btrfs";
+      options = [ "subvol=home" "compress=zstd" "noatime" ];
+    };
+
+  fileSystems."/nix" =
+    { device = "/dev/disk/by-label/NIXROOT";
+      fsType = "btrfs";
+      options = [ "subvol=nix" "compress=zstd" "noatime" ];
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/D347-8A32";
+    { device = "/dev/disk/by-label/NIXBOOT";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [ "fmask=0022" "dmask=0022" ];
     };
-  
-  fileSystems."/mnt/Data" = {
-    device = "/dev/disk/by-uuid/423E36095F33BFBE";
-    fsType = "ntfs-3g";
-    options = [ "rw" "uid=1000" ];
-  };
+
+  fileSystems."/mnt/Data" =
+    { device = "/dev/disk/by-uuid/7eb9ccf9-4fb8-481e-a732-f989d1ff93f0";
+      fsType = "btrfs";
+    };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/2e4569b7-bf7a-4d9d-a1fa-b10221f35470"; }
+    [ { device = "/dev/disk/by-uuid/9d2d56fc-8a7f-4ba0-a7a9-ad3c00439229"; }
     ];
+
+  
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -88,15 +94,6 @@
     virt-manager
     virt-top
     ntfs3g
-    rxvt-unicode
-
-    cheese
-    v4l-utils
-
-    kitty
-    tdf
-
-    inputs.helix.packages."${pkgs.system}".helix
   ];
 
   fonts.packages = with pkgs; [
@@ -197,7 +194,7 @@
     libvirt = {
       enable = true;
       connections."qemu:///system" = {
-         domains = [
+        domains = [
           {
             definition = ./libvirt/win10.xml;
             active = true;
