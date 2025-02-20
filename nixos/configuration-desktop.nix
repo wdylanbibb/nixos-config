@@ -14,6 +14,9 @@
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  users.mutableUsers = false;
+  users.users.dylan.hashedPasswordFile = "/persist/passwords/dylan";
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
