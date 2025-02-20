@@ -6,82 +6,13 @@
 {
   imports =
     [
+      ./hardware-configuration-desktop.nix
       ./configuration-shared.nix
-      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   networking.hostName = "bleistein"; # Define your hostname.
 
-  boot = {
-    supportedFilesystems = [ ];
-    kernelPackages = pkgs.linuxPackages_latest;
-    initrd = {
-      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-      kernelModules = [
-        "vfio_pci"
-        "vfio"
-        "vfio_iommu_type1"
-
-        "nvidia"
-        "nvidia_modeset"
-        "nvidia_uvm"
-        "nvidia_drm"
-      ];
-    };
-    kernelParams = [
-      # enable IOMMU
-      "amd_iommu=on"
-      "vfio-pci.ids=10de:2504,10de:228e"
-    ];
-    kernelModules = [ "kvm-amd" ];
-    extraModulePackages = [ ];
-  };
-
-  fileSystems."/" =
-    { device = "/dev/disk/by-label/NIXROOT";
-      fsType = "btrfs";
-      options = [ "subvol=root" "compress=zstd" "noatime" ];
-    };
-
-  fileSystems."/home" =
-    { device = "/dev/disk/by-label/NIXROOT";
-      fsType = "btrfs";
-      options = [ "subvol=home" "compress=zstd" "noatime" ];
-    };
-
-  fileSystems."/nix" =
-    { device = "/dev/disk/by-label/NIXROOT";
-      fsType = "btrfs";
-      options = [ "subvol=nix" "compress=zstd" "noatime" ];
-    };
-
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-label/NIXBOOT";
-      fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
-    };
-
-  fileSystems."/mnt/Data" =
-    { device = "/dev/disk/by-uuid/7eb9ccf9-4fb8-481e-a732-f989d1ff93f0";
-      fsType = "btrfs";
-    };
-
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/9d2d56fc-8a7f-4ba0-a7a9-ad3c00439229"; }
-    ];
-
-  
-
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp8s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp7s0.useDHCP = lib.mkDefault true;
-
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
