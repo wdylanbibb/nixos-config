@@ -61,6 +61,14 @@
       }'';
   };
 
+  programs.btop = {
+    enable = true;
+    settings = {
+      show_io_stat = false;
+      disks_filter = "exclude=/persist /etc/NetworkManager/system-connections /etc/nixos /home /nix /var/lib/libvirt/images /var/lib/nixos /var/lib/systemd/coredump /var/log";
+    };
+  };
+
   home.file = {
     Desktop.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Desktop";
     Dev.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Dev";
