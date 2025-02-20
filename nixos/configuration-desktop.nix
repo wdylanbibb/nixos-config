@@ -17,6 +17,26 @@
   users.mutableUsers = false;
   users.users.dylan.hashedPasswordFile = "/persist/passwords/dylan";
 
+  environment.persistence."/persist" = {
+    enable = true;
+    hideMounts = true;
+    directories = [
+      "/etc/nixos"
+      "/etc/NetworkManager/system-connections"
+      "/var/lib/nixos"
+      "/var/lib/systemd/coredump"
+      "/var/lib/libvirt/images"
+    ];
+    files = [
+      "/etc/machine-id"
+    ];
+  };
+
+  security.sudo.extraConfig = ''
+    # rollback results in sudo lectures after each reboot
+    Defaults lecture = never
+  '';
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -29,6 +49,13 @@
     virt-top
     ntfs3g
   ];
+
+  programs.git.config = {
+    user = {
+      name = "Dylan Bibb";
+      email = "wdylanbibb@gmail.com";
+    };
+  };
 
   fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" ]; })

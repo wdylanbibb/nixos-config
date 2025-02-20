@@ -20,6 +20,15 @@
     moonlight-qt
   ];
 
+  programs.git = {
+    enable = true;
+    extraConfig = {
+      safe = {
+        directory = [ "/etc/nixos" ];
+      };
+    };
+  };
+
   programs.zsh = {
     sessionVariables = {
       TERMINAL = "wezterm";

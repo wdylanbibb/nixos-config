@@ -22,6 +22,8 @@
     # Helix editor, use the master branch
     # helix.url = "github:helix-editor/helix/master";
 
+    impermanence.url = "github:nix-community/impermanence";
+
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
       # The `follows` keyword in inputs is used for inheritance.
@@ -56,7 +58,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, rust-overlay, nixvim, zellij-nix, nix-virt, ... }@inputs: {
+  outputs = { self, nixpkgs, impermanence, home-manager, rust-overlay, nixvim, zellij-nix, nix-virt, ... }@inputs: {
     nixosConfigurations = {
       spreckle = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
@@ -79,6 +81,7 @@
       bleistein = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
+          impermanence.nixosModules.impermanence
           nix-virt.nixosModules.default
           ./nixos/configuration-desktop.nix
           home-manager.nixosModules.home-manager {
