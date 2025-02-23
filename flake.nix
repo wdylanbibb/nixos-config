@@ -33,6 +33,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Secret Manager: https://github.com/Mic92/sops-nix
+    sops-nix.url = "github:Mic92/sops-nix";
+
     # Rust overlay: https://github.com/oxalica/rust-overlay
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
@@ -58,7 +61,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, impermanence, home-manager, rust-overlay, nixvim, zellij-nix, nix-virt, ... }@inputs: {
+  outputs = { self, nixpkgs, impermanence, home-manager, sops-nix, rust-overlay, nixvim, zellij-nix, nix-virt, ... }@inputs: {
     nixosConfigurations = {
       spreckle = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
@@ -83,6 +86,7 @@
         modules = [
           impermanence.nixosModules.impermanence
           nix-virt.nixosModules.default
+          sops-nix.nixosModules.sops
           ./nixos/configuration-desktop.nix
           home-manager.nixosModules.home-manager {
             home-manager.extraSpecialArgs = { inherit inputs; };

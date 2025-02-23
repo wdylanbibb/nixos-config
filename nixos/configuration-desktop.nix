@@ -23,9 +23,11 @@
     directories = [
       "/etc/nixos"
       "/etc/NetworkManager/system-connections"
+      "/etc/ssh"
       "/var/lib/nixos"
       "/var/lib/systemd/coredump"
       "/var/lib/libvirt/images"
+      "/var/lib/sops-nix"
     ];
     files = [
       "/etc/machine-id"
@@ -48,7 +50,27 @@
     virt-manager
     virt-top
     ntfs3g
+    age
   ];
+
+  sops = {
+    # Adds secrets.yml to the nix store
+    defaultSopsFile = ../secrets/example.yaml;
+    age = {
+      # Automatically imports SSH keys as age keys
+      sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+      # Using an age key that is expected to already be in the filesystem
+      keyFile = "/var/lib/sops-nix/key.txt";
+      # Generates new key if above does not exist
+      generateKey = true;
+    };
+    # Actual specification of the secrets
+    secrets = {
+      example-key = {};
+      "myservice/my_subdir/my_secret" = {};
+      dylan-password = {};
+    };
+  };
 
   programs.git.config = {
     user = {
