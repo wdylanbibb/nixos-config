@@ -1,5 +1,11 @@
-{ config, osConfig, pkgs, inputs, lib, ... }:
+{ config, osConfig, inputs, lib, pkgs, ... }:
 {
+  imports = [
+    # ../home-shared.nix
+    ./herbstluftwm.nix
+    ./polybar.nix
+  ];
+
   nixpkgs.config.allowUnfree = true;
 
   home.username = "dylan";
@@ -9,6 +15,8 @@
     enable = true;
     createDirectories = true;
   };
+
+  xsession.windowManager.herbstluftwm.enable = true;
 
   home.packages = with pkgs; [
     neofetch
@@ -55,6 +63,15 @@
     liquidprompt
 
     gimp
+    pipes-rs
+    rofi
+    wezterm
+    xdotool
+    maim
+    imagemagick
+    polybar-pulseaudio-control
+    strawberry
+    moonlight-qt
   ];
 
   programs.git = {
@@ -63,28 +80,26 @@
     userEmail = "wdylanbibb@gmail.com";
     delta = {
       enable = true;
-      options = {
-        side-by-side = true;
+      options.side-by-side = true;
+    };
+    extraConfig = {
+      safe = {
+        directory = [ "/etc/nixos" ];
       };
     };
   };
 
   programs.lazygit = {
     enable = true;
-    settings = {
-      git.paging = {
-        colorArg = "always";
-        pager = "delta --paging=never -s";
-      };
+    settings.git.paging = {
+      colorArg = "always";
+      pager = "delta --paging=never -s";
     };
   };
 
-  programs.firefox = {
-    enable = true;
-  };
-
+  programs.firefox.enable = true;
   programs.zoxide.enable = true;
-  
+
   programs.zellij = {
     enable = true;
     settings = {
@@ -161,30 +176,14 @@
     '';
     oh-my-zsh = {
       enable = true;
-      plugins = [
-        "ssh-agent"
-        "git"
-      	"thefuck"
-      	"aliases"
-      	"alias-finder"
-      	"eza"
-      	"rsync"
-      	"ssh"
-      	"vi-mode"
-      	"zsh-interactive-cd"
-      	"rust"
-      ];
+      plugins = [ "ssh-agent" "git" "thefuck" "aliases" "alias-finder" "eza" "rsync" "ssh" "vi-mode" "zsh-interactive-cd" "rust" ];
     };
-    # Seems like a bad idea...
-    # shellAliases = {
-    #   home-manager = "home-manager --flake $(readlink /etc/nixos)#$(whoami)@$(hostname)";
-    #   nixos-rebuild = "nixos-rebuild --flake $(readlink /etc/nixos)#$(whoami)@$(hostname)";
-    # };
+    sessionVariables = {
+      TERMINAL = "wezterm";
+    };
   };
 
-  programs.vim = {
-    enable = true;
-  };
+  programs.vim.enable = true;
 
   programs.ssh = {
     enable = true;
@@ -193,6 +192,53 @@
         Hostname ilab.cs.rutgers.edu
         User wdb46
     '';
+  };
+
+  services.polybar = {
+    package = pkgs.polybar.override {
+      pulseSupport = true;
+    };
+    enable = true;
+  };
+  systemd.user.services.polybar = {
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  programs.wezterm = {
+    enable = true;
+    extraConfig = ''
+      local wezterm = require("wezterm")
+      local act = wezterm.action
+      return {
+        keys = {},
+        use_fancy_tab_bar = false,
+        tab_bar_at_bottom = true,
+        hide_tab_bar_if_only_one_tab = true,
+        font_size = 8,
+        font = wezterm.font("Cozette"),
+        front_end = "WebGpu",
+      }'';
+  };
+
+  programs.btop = {
+    enable = true;
+    settings = {
+      show_io_stat = false;
+      disks_filter = "exclude=/persist /etc/NetworkManager/system-connections /etc/nixos /home /nix /var/lib/libvirt/images /var/lib/nixos /var/lib/systemd/coredump /var/log /etc/ssh /var/lib/sops-nix";
+    };
+  };
+
+  home.file = {
+    Desktop.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Desktop";
+    Dev.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Dev";
+    Documents.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Documents";
+    Downloads.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Downloads";
+    Music.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Music";
+    Pictures.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Pictures";
+    Public.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Public";
+    School.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/School";
+    Templates.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Templates";
+    Videos.source = config.lib.file.mkOutOfStoreSymlink "/mnt/Data/home/Videos";
   };
 
   # This value determines the home Manager release that your

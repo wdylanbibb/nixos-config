@@ -69,14 +69,14 @@
           impermanence.nixosModules.impermanence
           nix-virt.nixosModules.default
           sops-nix.nixosModules.sops
-          ./nixos/configuration-desktop.nix
+          ./nixos/configuration.nix
           
           home-manager.nixosModules.home-manager {
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
-            home-manager.users.dylan = import ./home-manager/home-desktop;
+            home-manager.users.dylan = import ./home-manager/home.nix;
           }
           ({ pkgs, ... }: {
             nixpkgs.overlays = [ rust-overlay.overlays.default ];
