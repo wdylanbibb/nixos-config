@@ -1,7 +1,9 @@
 keys:
-  - &dylan age147dpvv4sydpp4cs3e54e3q876hjuczppn9pmlfukxqss724j0qmshj4ykc
+  - &dylan age162qpf47u5gcnseyvqxq5hrp5cqujj9n8ca074r3uy8cucvusvgmqexjv5w
+  - &bleistein age124q23uv9lkj0u2wazn5f9kehch2w7r9mwdnnhxpr3z5a5dpmd9fqn9jw4f
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
     - age:
       - *dylan
+      - *bleistein

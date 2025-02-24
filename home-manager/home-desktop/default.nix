@@ -65,7 +65,7 @@
     enable = true;
     settings = {
       show_io_stat = false;
-      disks_filter = "exclude=/persist /etc/NetworkManager/system-connections /etc/nixos /home /nix /var/lib/libvirt/images /var/lib/nixos /var/lib/systemd/coredump /var/log";
+      disks_filter = "exclude=/persist /etc/NetworkManager/system-connections /etc/nixos /home /nix /var/lib/libvirt/images /var/lib/nixos /var/lib/systemd/coredump /var/log /etc/ssh /var/lib/sops-nix";
     };
   };
 
