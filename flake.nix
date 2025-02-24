@@ -63,24 +63,6 @@
 
   outputs = { self, nixpkgs, impermanence, home-manager, sops-nix, rust-overlay, nixvim, zellij-nix, nix-virt, ... }@inputs: {
     nixosConfigurations = {
-      spreckle = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./nixos/configuration-laptop.nix
-          home-manager.nixosModules.home-manager {
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-
-            home-manager.users.dylan = import ./home-manager/home-laptop.nix;
-          }
-          ({ pkgs, ... }: {
-            nixpkgs.overlays = [ rust-overlay.overlays.default ];
-            environment.systemPackages = [ pkgs.rust-bin.stable.latest.default ];
-          })
-        ];
-      };
-
       bleistein = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
@@ -88,6 +70,7 @@
           nix-virt.nixosModules.default
           sops-nix.nixosModules.sops
           ./nixos/configuration-desktop.nix
+          
           home-manager.nixosModules.home-manager {
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.useGlobalPkgs = true;
