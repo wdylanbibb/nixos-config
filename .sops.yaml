@@ -1,0 +1,11 @@
+keys:
+  # - &dylan age162qpf47u5gcnseyvqxq5hrp5cqujj9n8ca074r3uy8cucvusvgmqexjv5w
+  - &dylan age1f65pgvf39vpny34lemdpjn3u9rck8p09e76xvzc3sff3wc0f8dtscqwcwc
+  # - &bleistein age124q23uv9lkj0u2wazn5f9kehch2w7r9mwdnnhxpr3z5a5dpmd9fqn9jw4f
+  - &bleistein age1q94wvggylykkrysr4zyvy3grgqa39ema9vg8cr782p3tcd27tv7q2vyfeu
+creation_rules:
+  - path_regex: secrets/[^/]+\.(yaml|json|env|ini|key)$
+    key_groups:
+    - age:
+      - *dylan
+      - *bleistein
