@@ -1,4 +1,8 @@
-{ pkgs, config, ... }:
+{
+  config,
+  pkgs,
+  ...
+}:
 {
   gtk = {
     enable = true;
@@ -20,20 +24,16 @@
       package = pkgs.inter;
     };
   };
-  xdg.portal = {
-    enable = true;
-    extraPortals =
-      with pkgs;
-      lib.mkForce [
-        xdg-desktop-portal-gtk
-      ];
-    config = {
-      common.default = [ "gtk" ];
-    };
-  };
-
   xdg = {
     enable = true;
+    portal = {
+      enable = true;
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-gtk
+        xdg-desktop-portal-gnome
+      ];
+      config.common.default = [ "gtk" ];
+    };
     configFile = {
       "gtk-4.0/assets".source =
         "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/assets";

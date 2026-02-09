@@ -1,5 +1,10 @@
-{ config, ... }:
+{ config, var, ... }:
 {
+  modules.system.secrets.extraSecrets.data = {
+    sopsFile = "${var.secrets}/data.key";
+    format = "binary";
+  };
+
   environment.etc.crypttab = {
     mode = "0600";
     text = ''

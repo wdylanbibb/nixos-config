@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
     disko = {
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -27,36 +29,34 @@
   };
 
   outputs =
-    inputs@{ nixpkgs, home-manager, ... }:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
-      nixosConfigurations = {
-        bleistein = nixpkgs.lib.nixosSystem {
-          system = system;
-
-          specialArgs = { inherit inputs; };
-
-          modules = [
-            ./nixos/configuration.nix
-            inputs.disko.nixosModules.disko
-            inputs.sops-nix.nixosModules.sops
-            inputs.impermanence.nixosModules.impermanence
-            inputs.nix-virt.nixosModules.default
-          ];
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ ./parts ];
+      deploy = {
+        hosts = ./hosts;
+        var = {
+          users = ./users;
+          secrets = ./secrets;
         };
       };
-
-      homeConfigurations."dylan" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-
-        extraSpecialArgs = { inherit inputs; };
-
-        modules = [
-          ./home/home.nix
-        ];
-      };
     };
+
+  # outputs =
+  #   inputs@{ flake-parts, ... }:
+  #   flake-parts.lib.mkFlake { inherit inputs; } {
+  #     imports = [
+  #       (flake-parts.lib.modules.importApply ./parts/module.nix inputs)
+  #     ];
+  #
+  #     deploy = {
+  #       hosts = ./hosts;
+  #       users = ./users;
+  #     };
+  #
+  #     perSystem =
+  #       { pkgs, ... }:
+  #       {
+  #         formatter = pkgs.alejandra;
+  #       };
+  #   };
 }
