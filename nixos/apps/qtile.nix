@@ -13,13 +13,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      nautilus
-      file-roller
-      evince
-      xclip
-    ];
-
     environment.pathsToLink = [
       "/share/applications"
       "/share/xdg-desktop-portal"

@@ -86,6 +86,10 @@ in
           nix-virt.nixosModules.default
         ];
       homeModules = lib.filesystem.listFilesRecursive ../home;
+
+      var.overlays = with localInputs; [
+        vicinae.overlays.default
+      ];
     };
 
     flake = {

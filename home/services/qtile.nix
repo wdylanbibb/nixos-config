@@ -6,8 +6,16 @@
 }:
 {
   config = lib.mkIf osConfig.modules.apps.qtile.enable {
-    home.packages = with pkgs; [ maim ];
+    home.packages = with pkgs; [
+      maim
+      nautilus
+      file-roller
+      evince
+      xclip
+    ];
+
     home.pointerCursor.x11.enable = true;
+
     xdg.configFile."qtile/config.py" = {
       enable = true;
       text = ''
