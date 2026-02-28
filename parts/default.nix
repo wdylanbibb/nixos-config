@@ -1,10 +1,14 @@
 {
   lib,
   inputs,
+  config,
   ...
 }:
 rec {
-  imports = [ flake.flakeModules.default ];
+  imports = [
+    flake.flakeModules.default
+    (import ./packages.nix { inherit inputs lib config; })
+  ];
 
   flake = {
     inherit (inputs.flake-parts) lib;

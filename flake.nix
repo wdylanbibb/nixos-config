@@ -1,5 +1,17 @@
 {
-  description = "Dylan's NixOS configuration";
+  outputs =
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ ./parts ];
+      deploy = {
+        hosts = ./hosts;
+        var = {
+          users = ./users;
+          secrets = ./secrets;
+          wrappedPkgs = ./wrapped;
+        };
+      };
+    };
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -15,6 +27,11 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
+    wrappers = {
+      url = "github:BirdeeHub/nix-wrapper-modules";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-virt = {
       url = "https://flakehub.com/f/AshleyYakeley/NixVirt/0.6.0.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -27,41 +44,32 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+
     vicinae = {
       url = "github:vicinaehq/vicinae";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  };
 
-  outputs =
-    inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ ./parts ];
-      deploy = {
-        hosts = ./hosts;
-        var = {
-          users = ./users;
-          secrets = ./secrets;
-        };
-      };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
-  # outputs =
-  #   inputs@{ flake-parts, ... }:
-  #   flake-parts.lib.mkFlake { inherit inputs; } {
-  #     imports = [
-  #       (flake-parts.lib.modules.importApply ./parts/module.nix inputs)
-  #     ];
-  #
-  #     deploy = {
-  #       hosts = ./hosts;
-  #       users = ./users;
-  #     };
-  #
-  #     perSystem =
-  #       { pkgs, ... }:
-  #       {
-  #         formatter = pkgs.alejandra;
-  #       };
-  #   };
+
+    # Neovim Plugins
+    plugins-lze = {
+      url = "github:BirdeeHub/lze";
+      flake = false;
+    };
+
+    plugins-lzextras = {
+      url = "github:BirdeeHub/lzextras";
+      flake = false;
+    };
+
+    plugins-nvim-recorder = {
+      url = "github:chrisgrieser/nvim-recorder";
+      flake = false;
+    };
+  };
 }

@@ -235,6 +235,38 @@
         "type": "github"
       }
     },
+    "plugins-lze": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1770530412,
+        "narHash": "sha256-QBxZmBu6K+HRrIf381/0eNSVK93OCA0Rn1blx0Vqyng=",
+        "owner": "BirdeeHub",
+        "repo": "lze",
+        "rev": "7276233f8fbe883e0a3b2164a836a2b292883a1c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "BirdeeHub",
+        "repo": "lze",
+        "type": "github"
+      }
+    },
+    "plugins-lzextras": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1770530361,
+        "narHash": "sha256-Jdg7e8VsJxx3/x6TJlnGrHtno17L5AAiUewOGjf1GGE=",
+        "owner": "BirdeeHub",
+        "repo": "lzextras",
+        "rev": "5abb946ece1b7710761e78588466620acd3be257",
+        "type": "github"
+      },
+      "original": {
+        "owner": "BirdeeHub",
+        "repo": "lzextras",
+        "type": "github"
+      }
+    },
     "plugins-nvim-parinfer": {
       "flake": false,
       "locked": {
@@ -259,6 +291,22 @@
         "owner": "chrisgrieser",
         "repo": "nvim-recorder",
         "rev": "7afb227a097ff6a427f69822b96143af14d2f5ef",
+        "type": "github"
+      },
+      "original": {
+        "owner": "chrisgrieser",
+        "repo": "nvim-recorder",
+        "type": "github"
+      }
+    },
+    "plugins-nvim-recorder_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1770384437,
+        "narHash": "sha256-G6k/A5JYMW/3MqZ7bnCzLirLJyYCaLY7X5OumM+LbHU=",
+        "owner": "chrisgrieser",
+        "repo": "nvim-recorder",
+        "rev": "cf2e07d1d60f225943b2f2457ecd8e2b3e4ee2d5",
         "type": "github"
       },
       "original": {
@@ -292,8 +340,13 @@
         "nix-cats": "nix-cats",
         "nix-virt": "nix-virt",
         "nixpkgs": "nixpkgs_3",
+        "plugins-lze": "plugins-lze",
+        "plugins-lzextras": "plugins-lzextras",
+        "plugins-nvim-recorder": "plugins-nvim-recorder_2",
+        "rust-overlay": "rust-overlay_2",
         "sops-nix": "sops-nix",
-        "vicinae": "vicinae"
+        "vicinae": "vicinae",
+        "wrappers": "wrappers"
       }
     },
     "rust-overlay": {
@@ -309,6 +362,26 @@
         "owner": "oxalica",
         "repo": "rust-overlay",
         "rev": "88ceedecde53e809b4bf8b5fd10d181889d9bac7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "rust-overlay_2": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771988922,
+        "narHash": "sha256-Fc6FHXtfEkLtuVJzd0B6tFYMhmcPLuxr90rWfb/2jtQ=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "f4443dc3f0b6c5e6b77d923156943ce816d1fcb9",
         "type": "github"
       },
       "original": {
@@ -368,6 +441,26 @@
       "original": {
         "owner": "vicinaehq",
         "repo": "vicinae",
+        "type": "github"
+      }
+    },
+    "wrappers": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771743990,
+        "narHash": "sha256-KNTuqLytdRE0MVhM1hd3IJTlcOG6In/6klbiEDWYOaA=",
+        "owner": "BirdeeHub",
+        "repo": "nix-wrapper-modules",
+        "rev": "0ea455457dac3de9129498f5c50a35153ab56484",
+        "type": "github"
+      },
+      "original": {
+        "owner": "BirdeeHub",
+        "repo": "nix-wrapper-modules",
         "type": "github"
       }
     }

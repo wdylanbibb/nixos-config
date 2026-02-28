@@ -53,8 +53,8 @@ in
         default = [ ];
       };
 
-      users = lib.mkOption {
-        type = with lib.types; nullOr path;
+      users = mkOption {
+        type = with types; nullOr path;
         default = null;
       };
 
@@ -66,6 +66,11 @@ in
       overlays = mkOption {
         type = with types; listOf raw;
         default = [ ];
+      };
+
+      wrappedPkgs = mkOption {
+        type = with types; nullOr path;
+        default = null;
       };
     };
   };
@@ -89,6 +94,7 @@ in
 
       var.overlays = with localInputs; [
         vicinae.overlays.default
+        rust-overlay.overlays.default
       ];
     };
 
