@@ -18,17 +18,20 @@
   features = {
     users.enable = true;
     virtualisation = {
-      enable = true;
-      pciIds = [
-        "10de:2504"
-        "10de:228e"
-      ];
-      domains = [
-        {
-          definition = ./win11.xml;
-          active = true;
-        }
-      ];
+      docker.enable = true;
+      libvirt = {
+        enable = true;
+        pciIds = [
+          "10de:2504"
+          "10de:228e"
+        ];
+        domains = [
+          {
+            definition = ./win11.xml;
+            active = true;
+          }
+        ];
+      };
     };
   };
 
