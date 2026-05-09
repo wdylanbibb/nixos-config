@@ -3,11 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.modules.apps.qtile;
-in
-{
+in {
   options.modules.apps.qtile = with lib; {
     enable = mkEnableOption "Enable the QTile window manager.";
   };
@@ -25,8 +23,8 @@ in
       dpi = 96;
       windowManager.qtile = {
         enable = true;
-        extraPackages =
-          python3Packages: with python3Packages; [
+        extraPackages = python3Packages:
+          with python3Packages; [
             qtile-extras
             dbus-fast
           ];
@@ -49,7 +47,6 @@ in
         xdg-desktop-portal-gtk
         xdg-desktop-portal-gnome
       ];
-      xdgOpenUsePortal = true;
     };
 
     services.pipewire = {

@@ -3,11 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.modules.apps.niri;
-in
-{
+in {
   options.modules.apps.niri = with lib; {
     enable = mkEnableOption "Enable the Niri window manager.";
   };
@@ -28,7 +26,6 @@ in
         xdg-desktop-portal-gtk
         xdg-desktop-portal-gnome
       ];
-      xdgOpenUsePortal = true;
     };
 
     services.pipewire = {
