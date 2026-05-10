@@ -1,23 +1,43 @@
+inputs:
 {
-  osConfig,
+  config,
   lib,
   pkgs,
+  wlib,
   ...
 }:
-{
-  config = lib.mkIf osConfig.modules.apps.qtile.enable {
-    home.packages = with pkgs; [
-      maim
-      nautilus
-      file-roller
-      evince
-      xclip
+let
+  qtilePackage = pkgs.python3Packages.qtile.override {
+    extraPackages = with pkgs.python3Packages; [
+      qtile-extras
+      dbus-fast
     ];
+  };
 
-    home.pointerCursor.x11.enable = true;
+  helperPackages = with pkgs; [
+    maim
+    nautilus
+    file-roller
+    evince
+    xclip
+  ];
 
-    xdg.configFile."qtile/config.py" = {
-      enable = true;
+  helperPath = lib.makeBinPath helperPackages;
+in
+{
+  imports = [ wlib.modules.default ];
+
+  options."config.py" = lib.mkOption {
+    type = wlib.types.file config.pkgs;
+    default.path = pkgs.writeTextFile {
+      name = "qtile-config.py";
+      checkPhase = ''
+        export HOME="$TMPDIR"
+        export XDG_DATA_HOME="$TMPDIR/xdg-data"
+        export XDG_CACHE_HOME="$TMPDIR/xdg-cache"
+        mkdir -p "$XDG_DATA_HOME" "$XDG_CACHE_HOME"
+        ${lib.getExe qtilePackage} check -c $out
+      '';
       text = ''
         import os
 
@@ -204,5 +224,63 @@
         wmname = "LG3D"
       '';
     };
+  };
+
+  config = {
+    package = qtilePackage;
+    outputs = [ "out" ];
+    filesToPatch = [ ];
+
+    builderFunction =
+      {
+        config,
+        lib,
+        lndir,
+        ...
+      }:
+      let
+        configPath = config."config.py".path;
+      in
+      ''
+        mkdir -p $out
+        ${lndir}/bin/lndir -silent "${config.package}" $out
+
+        rm -f $out/bin/qtile
+        cat > $out/bin/qtile <<'EOF'
+        #!${pkgs.runtimeShell}
+        export PATH="${helperPath}:$PATH"
+
+        if [ "''${1:-}" = "start" ]; then
+          shift
+          exec "${config.package}/bin/qtile" start -c "${configPath}" "$@"
+        elif [ "''${1:-}" = "check" ]; then
+          shift
+          exec "${config.package}/bin/qtile" check -c "${configPath}" "$@"
+        else
+          exec "${config.package}/bin/qtile" "$@"
+        fi
+        EOF
+        chmod +x $out/bin/qtile
+
+        rm -f $out/share/xsessions/qtile.desktop
+        cat > $out/share/xsessions/qtile.desktop <<EOF
+        [Desktop Entry]
+        Name=Qtile
+        Comment=Qtile Session
+        Exec=$out/bin/qtile start
+        Type=Application
+        Keywords=wm;tiling
+        EOF
+
+        rm -f $out/share/wayland-sessions/qtile-wayland.desktop
+        cat > $out/share/wayland-sessions/qtile-wayland.desktop <<EOF
+        [Desktop Entry]
+        Name=Qtile (Wayland)
+        Comment=Qtile Session
+        Exec=$out/bin/qtile start -b wayland
+        Type=Application
+        Keywords=wm;tiling
+        EOF
+      '';
   };
 }

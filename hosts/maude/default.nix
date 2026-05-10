@@ -13,6 +13,7 @@
   };
 
   modules.apps = {
+    gtk.enable = true;
     niri.enable = true;
     lightdm.enable = true;
   };

@@ -37,18 +37,8 @@ in
       default = [ ];
     };
 
-    homeModules = mkOption {
-      type = with types; listOf deferredModule;
-      default = [ ];
-    };
-
     var = {
       nixosModules = mkOption {
-        type = with types; listOf deferredModule;
-        default = [ ];
-      };
-
-      homeModules = mkOption {
         type = with types; listOf deferredModule;
         default = [ ];
       };
@@ -90,7 +80,6 @@ in
           sops-nix.nixosModules.sops
           nix-virt.nixosModules.default
         ];
-      homeModules = lib.filesystem.listFilesRecursive ../home;
 
       var.overlays = with localInputs; [
         vicinae.overlays.default
@@ -104,23 +93,6 @@ in
         localInputs.nixpkgs.lib.nixosSystem {
           modules = config.deploy.nixosModules ++ [
             mod
-            localInputs.home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs.var = config.deploy.var // {
-                  libInputs = localInputs;
-                };
-
-                users = mkConfig config.deploy.var.users (
-                  { name, mod }:
-                  {
-                    imports = config.deploy.homeModules ++ [ mod ];
-                  }
-                );
-              };
-            }
           ];
           specialArgs.var = config.deploy.var // {
             libInputs = localInputs;

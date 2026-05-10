@@ -25,7 +25,10 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
-    impermanence.url = "github:nix-community/impermanence";
+    impermanence = {
+      url = "github:nix-community/impermanence";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     wrappers = {
       url = "github:BirdeeHub/nix-wrapper-modules";
@@ -38,11 +41,6 @@
     };
 
     nix-cats.url = "github:wdylanbibb/nixcats-config";
-
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
 
     vicinae = {

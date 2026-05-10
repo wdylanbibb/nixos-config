@@ -2,19 +2,27 @@
   config,
   lib,
   pkgs,
+  var,
   ...
 }: let
   cfg = config.modules.apps.qtile;
+  wrappedPkgs = var.libInputs.self.packages.${pkgs.stdenv.hostPlatform.system};
 in {
   options.modules.apps.qtile = with lib; {
     enable = mkEnableOption "Enable the QTile window manager.";
   };
 
   config = lib.mkIf cfg.enable {
-    environment.pathsToLink = [
-      "/share/applications"
-      "/share/xdg-desktop-portal"
-    ];
+    environment = {
+      pathsToLink = [
+        "/share/applications"
+        "/share/xdg-desktop-portal"
+      ];
+
+      systemPackages = [
+        wrappedPkgs.qtile
+      ];
+    };
 
     programs.dconf.enable = true;
 
@@ -23,6 +31,7 @@ in {
       dpi = 96;
       windowManager.qtile = {
         enable = true;
+        configFile = wrappedPkgs.qtile.passthru.configuration."config.py".path;
         extraPackages = python3Packages:
           with python3Packages; [
             qtile-extras
@@ -34,19 +43,6 @@ in {
     environment.variables = {
       GDK_SCALE = "1";
       GDK_DPI_SCALE = "1";
-    };
-
-    xdg.icons = {
-      enable = true;
-    };
-
-    xdg.portal = {
-      enable = true;
-      config.common.default = "gtk";
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-gtk
-        xdg-desktop-portal-gnome
-      ];
     };
 
     services.pipewire = {

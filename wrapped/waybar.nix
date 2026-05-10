@@ -1,14 +1,13 @@
+inputs:
 {
-  osConfig,
-  lib,
   pkgs,
+  wlib,
   ...
 }:
 {
-  config = lib.mkIf osConfig.modules.apps.niri.enable {
-    programs.waybar = {
-      enable = true;
-      settings.mainBar = {
+  imports = [ wlib.wrapperModules.waybar ];
+
+  settings.mainBar = {
         reload_style_on_change = true;
         toggle = true;
         layer = "top";
@@ -337,7 +336,7 @@
           tooltip-format-charging = "Charging: {capacity}%";
         };
       };
-      style = ''
+  "style.css".content = ''
         @define-color cursor #CDD6F4;
         @define-color background #1E1E2E;
         @define-color foreground #CDD6F4;
@@ -571,7 +570,5 @@
         menuitem {
           border-radius: 8px;
         }
-      '';
-    };
-  };
+  '';
 }

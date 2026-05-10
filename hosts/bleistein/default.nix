@@ -40,10 +40,11 @@
     persist = {
       enable = true;
     };
-    network.tailscale.enable = true;
+    network.tailscale.enable = false;
   };
 
   modules.apps = {
+    gtk.enable = true;
     qtile.enable = true;
     lightdm.enable = true;
   };
