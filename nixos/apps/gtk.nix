@@ -31,6 +31,7 @@ let
   documentViewer = [ "org.gnome.Evince.desktop" ];
   imageViewer = [ "org.gnome.Loupe.desktop" ];
   archiveManager = [ "org.gnome.FileRoller.desktop" ];
+  videoPlayer = [ "vlc.desktop" ];
 
   gtkSettings = ''
     [Settings]
@@ -41,6 +42,11 @@ let
     gtk-font-name=${font.name} ${toString font.size}
     gtk-icon-theme-name=${iconTheme.name}
     gtk-theme-name=${theme.name}
+  '';
+
+  xresources = ''
+    Xcursor.theme: ${cursorTheme.name}
+    Xcursor.size: ${toString cursorTheme.size}
   '';
 in
 {
@@ -62,6 +68,7 @@ in
         loupe
         evince
         file-roller
+        vlc
 
         theme.package
         iconTheme.package
@@ -79,6 +86,7 @@ in
       etc = {
         "xdg/gtk-3.0/settings.ini".text = gtkSettings;
         "xdg/gtk-4.0/settings.ini".text = gtkSettings;
+        "X11/Xresources".text = xresources;
         "xdg/gtk-4.0/assets".source = "${theme.package}/share/themes/${theme.name}/gtk-4.0/assets";
         "xdg/gtk-4.0/gtk.css".source = "${theme.package}/share/themes/${theme.name}/gtk-4.0/gtk.css";
         "xdg/gtk-4.0/gtk-dark.css".source = "${theme.package}/share/themes/${theme.name}/gtk-4.0/gtk-dark.css";
@@ -201,6 +209,13 @@ in
           "application/x-tar" = archiveManager;
           "application/x-xz" = archiveManager;
           "application/zip" = archiveManager;
+
+          "video/mp4" = videoPlayer;
+          "video/x-matroska" = videoPlayer;
+          "video/flv" = videoPlayer;
+          "video/mpeg" = videoPlayer;
+          "video/ogg" = videoPlayer;
+          "video/quicktime" = videoPlayer;
         };
       };
       portal = {
