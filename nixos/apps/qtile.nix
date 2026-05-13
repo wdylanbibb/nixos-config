@@ -20,6 +20,7 @@ in {
       ];
 
       systemPackages = [
+        pkgs.xorg.xsetroot
         wrappedPkgs.qtile
       ];
     };
@@ -29,6 +30,10 @@ in {
     services.xserver = {
       enable = true;
       dpi = 96;
+      displayManager.sessionCommands = ''
+        ${pkgs.xorg.xrdb}/bin/xrdb -merge /etc/X11/Xresources
+        ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name left_ptr
+      '';
       windowManager.qtile = {
         enable = true;
         configFile = wrappedPkgs.qtile.passthru.configuration."config.py".path;

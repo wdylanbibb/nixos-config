@@ -20,6 +20,7 @@ let
     file-roller
     evince
     xclip
+    xorg.xsetroot
   ];
 
   helperPath = lib.makeBinPath helperPackages;
@@ -42,7 +43,7 @@ in
         import os
 
         import libqtile.resources
-        from libqtile import bar, layout, qtile, widget
+        from libqtile import bar, hook, layout, qtile, widget
         from libqtile.config import Click, Drag, Group, Key, Match, Screen, KeyChord
         from libqtile.lazy import lazy
         from libqtile.utils import guess_terminal
@@ -54,12 +55,124 @@ in
         mod2 = "control"
         home = os.path.expanduser("~")
         terminal = guess_terminal()
+        edge_tolerance = 2
+
+        def bordering_screen(qtile, step):
+            current = qtile.current_screen
+            current_left = current.x
+            current_right = current.x + current.width
+
+            def overlaps_vertically(screen):
+                return screen.y < current.y + current.height and current.y < screen.y + screen.height
+
+            if step < 0:
+                candidates = [
+                    screen
+                    for screen in qtile.screens
+                    if screen is not current and overlaps_vertically(screen) and screen.x + screen.width <= current_left
+                ]
+                return max(candidates, key=lambda screen: screen.x + screen.width, default=None)
+
+            candidates = [
+                screen
+                for screen in qtile.screens
+                if screen is not current and overlaps_vertically(screen) and screen.x >= current_right
+            ]
+            return min(candidates, key=lambda screen: screen.x, default=None)
+
+        def windows_for_direction(qtile):
+            current_layout = qtile.current_group.current_layout
+            if current_layout.name == "screensplit":
+                return current_layout.active_layout.get_windows()
+            return current_layout.get_windows()
+
+        def directional_target(qtile, axis, step):
+            current_window = qtile.current_group.current_window
+            if current_window is None:
+                return None
+
+            current_center = (
+                current_window.x + current_window.width / 2,
+                current_window.y + current_window.height / 2,
+            )
+
+            candidates = []
+            for win in windows_for_direction(qtile):
+                if win is current_window:
+                    continue
+
+                center = (win.x + win.width / 2, win.y + win.height / 2)
+                primary_delta = center[axis] - current_center[axis]
+                if primary_delta * step <= 0:
+                    continue
+
+                secondary_delta = abs(center[1 - axis] - current_center[1 - axis])
+                candidates.append((abs(primary_delta), secondary_delta, win))
+
+            if not candidates:
+                return None
+
+            return min(candidates, key=lambda item: (item[0], item[1]))[2]
+
+        def focus_direction(axis, step):
+            def _inner(qtile):
+                current_window = qtile.current_group.current_window
+                current_screen = qtile.current_screen
+                current_layout = qtile.current_group.current_layout
+
+                target = directional_target(qtile, axis, step)
+                if target is not None:
+                    qtile.current_group.focus(target, True)
+                    return
+
+                if axis == 0 and current_window is not None:
+                    if step < 0:
+                        at_edge = current_window.x <= current_screen.x + edge_tolerance
+                    else:
+                        at_edge = (
+                            current_window.x + current_window.width
+                            >= current_screen.x + current_screen.width - edge_tolerance
+                        )
+
+                    screen = bordering_screen(qtile, step) if at_edge else None
+                    if screen is not None:
+                        qtile.focus_screen(qtile.screens.index(screen), warp=False)
+                        return
+
+                if axis != 1 or current_layout.name != "screensplit":
+                    return
+
+                if step > 0:
+                    current_layout.next_split()
+                    target = current_layout.active_layout.focus_first()
+                else:
+                    current_layout.previous_split()
+                    target = current_layout.active_layout.focus_last()
+
+                if target is not None:
+                    qtile.current_group.focus(target, True)
+            return _inner
+
+        def move_split_or_shuffle(step):
+            def _inner(qtile):
+                current_layout = qtile.current_group.current_layout
+                if current_layout.name == "screensplit":
+                    if step > 0:
+                        current_layout.move_window_to_next_split()
+                    else:
+                        current_layout.move_window_to_previous_split()
+                    return
+
+                shuffle = getattr(current_layout, "shuffle_down" if step > 0 else "shuffle_up", None)
+                if shuffle is not None:
+                    shuffle()
+            return _inner
 
         keys = [
             Key([mod], "h", lazy.layout.left(), desc="Move focus to the left"),
+            Key([mod], "l", lazy.layout.right(), desc="Move focus to the right"),
             Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
             Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
-            Key([mod], "l", lazy.layout.right(), desc="Move focus to the right"),
             KeyChord([mod], "w", [
                 Key([], "j", lazy.layout.next_split().when(layout="screensplit"), lazy.layout.next()),
                 Key([], "k", lazy.layout.previous_split().when(layout="screensplit"), lazy.layout.previous()),
@@ -72,18 +185,10 @@ in
                 Key([], "n", lazy.layout.normalize()),
                 Key([], "m", lazy.layout.maximize()),
             ], mode=True, name="resize"),
-            KeyChord([mod], "m", [
-                KeyChord([], "m", [
-                    Key([], "h", lazy.layout.shuffle_left()),
-                    Key([], "j", lazy.layout.shuffle_down()),
-                    Key([], "k", lazy.layout.shuffle_up()),
-                    Key([], "l", lazy.layout.shuffle_right()),
-                ], mode=True, name="move (window)"),
-                KeyChord([], "w", [
-                    Key([], "j", lazy.layout.move_window_to_next_split().when(layout="screensplit")),
-                    Key([], "k", lazy.layout.move_window_to_previous_split().when(layout="screensplit")),
-                ], mode=True, name="move (screensplit)")
-            ]),
+            Key([mod, "shift"], "h", lazy.layout.shuffle_left()),
+            Key([mod, "shift"], "l", lazy.layout.shuffle_right()),
+            Key([mod, "shift"], "j", lazy.layout.shuffle_down()),
+            Key([mod, "shift"], "k", lazy.layout.shuffle_up()),
             Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
             Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
             Key([mod], "f", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on focused window"),
@@ -150,6 +255,11 @@ in
             padding=3,
         )
         extension_defaults = widget_defaults.copy()
+
+        @hook.subscribe.startup_once
+        def set_root_cursor():
+            qtile.spawn("xsetroot -cursor_name left_ptr")
+
         screens = [
             Screen(
                 background="#1a1b26",
