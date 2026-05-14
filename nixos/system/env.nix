@@ -1,49 +1,94 @@
 {
   lib,
+  config,
   pkgs,
   var,
   ...
 }:
 let
   wrappedPkgs = var.libInputs.self.packages.${pkgs.stdenv.hostPlatform.system};
+  obsCfg = config.modules.apps.obs;
 in
 {
-  environment = {
-    systemPackages = with pkgs; [
-      vim
-      rust-bin.stable.latest.default
-      rust-analyzer
-      vscode-extensions.vadimcn.vscode-lldb.adapter
-      wrappedPkgs.git
-      wrappedPkgs.neovim
-      wrappedPkgs.kitty
-      wrappedPkgs.zsh
-      liquidprompt
-      eza
-      zsh-command-time
-      zsh-forgit
-      jq
-      fzf
-      bat
-      ripgrep
-      zoxide
-      yazi
-      lazygit
-      gcc
-      which
-      fd
-      fzf
-      gh
-      rclone
-      imagemagick
+  options.modules.apps.obs = with lib; {
+    enable = mkEnableOption "Enable OBS Studio.";
 
-      spotify
-      firefox
-      vesktop
-    ];
-    enableAllTerminfo = true;
+    virtualCamera = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable v4l2loopback support for the OBS virtual camera.";
+      };
+
+      users = mkOption {
+        type = with types; listOf str;
+        default = [ ];
+        description = "Users to add to the video group for virtual camera access.";
+      };
+    };
   };
 
-  time.timeZone = "America/New_York";
-  i18n.defaultLocale = "en_US.UTF-8";
+  config = lib.mkMerge [
+    {
+      environment = {
+        systemPackages = with pkgs; [
+          vim
+          rust-bin.stable.latest.default
+          rust-analyzer
+          vscode-extensions.vadimcn.vscode-lldb.adapter
+          wrappedPkgs.git
+          wrappedPkgs.neovim
+          wrappedPkgs.kitty
+          wrappedPkgs.zsh
+          liquidprompt
+          eza
+          zsh-command-time
+          zsh-forgit
+          jq
+          fzf
+          bat
+          ripgrep
+          zoxide
+          yazi
+          lazygit
+          gcc
+          which
+          fd
+          fzf
+          gh
+          rclone
+          imagemagick
+
+          spotify
+          firefox
+          vesktop
+        ];
+        enableAllTerminfo = true;
+      };
+
+      time.timeZone = "America/New_York";
+      i18n.defaultLocale = "en_US.UTF-8";
+    }
+    (lib.mkIf obsCfg.enable (
+      lib.mkMerge [
+        {
+          environment.systemPackages = [ pkgs.obs-studio ];
+        }
+
+        (lib.mkIf obsCfg.virtualCamera.enable {
+          boot = {
+            extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
+            kernelModules = [ "v4l2loopback" ];
+            extraModprobeConfig = ''
+              options v4l2loopback devices=1 card_label="OBS Virtual Camera" exclusive_caps=1
+            '';
+          };
+
+          users.users = lib.genAttrs obsCfg.virtualCamera.users (_: {
+            extraGroups = [ "video" ];
+          });
+        })
+      ]
+    ))
+  ];
 }

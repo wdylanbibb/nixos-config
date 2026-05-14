@@ -45,6 +45,10 @@
 
   modules.apps = {
     gtk.enable = true;
+    obs = {
+      enable = true;
+      virtualCamera.users = [ "dylan" ];
+    };
     qtile.enable = true;
     lightdm.enable = true;
   };
