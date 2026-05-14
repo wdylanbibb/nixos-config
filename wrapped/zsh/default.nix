@@ -91,6 +91,7 @@ inputs:
       nhs = "nh home switch -a";
       g = "lazygit";
       y = "yazi";
+      n = "nvim";
 
       lD = "eza -glD";
       lDD = "eza -glDa";
