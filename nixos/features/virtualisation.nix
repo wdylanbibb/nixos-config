@@ -58,7 +58,7 @@ in
                 };
                 restart = lib.mkOption {
                   type = nullOr bool;
-                  default = null;
+                  default = false;
                   description = "whether to restart on activation (or null to only restart when changed)";
                 };
               };
