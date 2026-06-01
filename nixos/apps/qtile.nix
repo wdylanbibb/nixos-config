@@ -7,6 +7,29 @@
 }: let
   cfg = config.modules.apps.qtile;
   wrappedPkgs = var.libInputs.self.packages.${pkgs.stdenv.hostPlatform.system};
+  qtileConfig = wrappedPkgs.qtile.passthru.configuration."config.py".path;
+  qtileConfigDir = builtins.dirOf qtileConfig;
+  qtileHelperPackages = with pkgs; [
+    imagemagick
+    maim
+    nautilus
+    file-roller
+    evince
+    satty
+    xclip
+    xorg.xsetroot
+  ];
+  eurostileFont = pkgs.stdenvNoCC.mkDerivation {
+    pname = "eurostile-extended";
+    version = "1.0";
+    src = ../../wrapped/qtile/fonts;
+    installPhase = ''
+      runHook preInstall
+      install -Dm644 EurostileExtendedBlack.ttf \
+        $out/share/fonts/truetype/EurostileExtendedBlack.ttf
+      runHook postInstall
+    '';
+  };
 in {
   options.modules.apps.qtile = with lib; {
     enable = mkEnableOption "Enable the QTile window manager.";
@@ -19,10 +42,8 @@ in {
         "/share/xdg-desktop-portal"
       ];
 
-      systemPackages = [
-        pkgs.xorg.xsetroot
-        wrappedPkgs.qtile
-      ];
+      systemPackages = qtileHelperPackages;
+      etc."xdg/qtile".source = qtileConfigDir;
     };
 
     programs.dconf.enable = true;
@@ -36,7 +57,7 @@ in {
       '';
       windowManager.qtile = {
         enable = true;
-        configFile = wrappedPkgs.qtile.passthru.configuration."config.py".path;
+        package = pkgs.python3Packages.qtile;
         extraPackages = python3Packages:
           with python3Packages; [
             qtile-extras
@@ -56,6 +77,7 @@ in {
     };
 
     fonts.packages = with pkgs; [
+      eurostileFont
       nerd-fonts.monaspace
       inter
       font-awesome
