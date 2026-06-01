@@ -72,7 +72,10 @@ in
     (lib.mkIf obsCfg.enable (
       lib.mkMerge [
         {
-          environment.systemPackages = [ pkgs.obs-studio ];
+          programs.obs-studio = {
+            enable = true;
+            plugins = with pkgs.obs-studio-plugins; [ looking-glass-obs ];
+          };
         }
 
         (lib.mkIf obsCfg.virtualCamera.enable {
