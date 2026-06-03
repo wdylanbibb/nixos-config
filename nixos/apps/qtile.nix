@@ -21,14 +21,18 @@
     wrappedPkgs.retro-cool-term
     xorg.xsetroot
   ];
-  eurostileFont = pkgs.stdenvNoCC.mkDerivation {
-    pname = "eurostile-extended";
+  qtileFonts = pkgs.stdenvNoCC.mkDerivation {
+    pname = "qtile-local-fonts";
     version = "1.0";
     src = ../../wrapped/qtile/fonts;
     installPhase = ''
       runHook preInstall
-      install -Dm644 EurostileExtendedBlack.ttf \
-        $out/share/fonts/truetype/EurostileExtendedBlack.ttf
+
+      find . -type f -iname '*.ttf' -exec install -Dm644 {} \
+        $out/share/fonts/truetype/{} \;
+      find . -type f -iname '*.otf' -exec install -Dm644 {} \
+        $out/share/fonts/opentype/{} \;
+
       runHook postInstall
     '';
   };
@@ -80,7 +84,7 @@ in {
     };
 
     fonts.packages = with pkgs; [
-      eurostileFont
+      qtileFonts
       wrappedPkgs.retro-cool-term
       nerd-fonts.monaspace
       inter

@@ -51,6 +51,7 @@ in
           zoxide
           yazi
           lazygit
+          bottom
           gcc
           which
           fd

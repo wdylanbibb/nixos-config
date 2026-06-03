@@ -42,26 +42,26 @@ inputs: {
   };
 
   profile = builtins.toJSON {
-    ambientLight = 0.07;
-    backgroundColor = "#180e13";
-    bloom = 0.07;
-    brightness = 0.5;
-    burnIn = 0.15;
-    chromaColor = 0.2483;
-    contrast = 0.7959;
+    backgroundColor = "#000000";
+    fontColor = "#ffffff";
     flickering = 0;
-    fontColor = "#8187aa";
-    fontName = "System: Space Mono";
-    fontWidth = 1;
-    glowingLine = 0;
     horizontalSync = 0;
-    jitter = 0;
-    rasterization = 0;
-    rbgShift = 0;
-    saturationColor = 0.2483;
+    staticNoise = 0;
+    chromaColor = 1;
+    saturationColor = 1;
     screenCurvature = 0;
-    staticNoise = 0.1;
+    glowingLine = 0;
+    burnIn = 0.7632;
+    bloom = 0.168;
+    rasterization = 0;
+    jitter = 0.0661;
+    rbgShift = 0.1733;
+    brightness = 1;
+    contrast = 1;
+    ambientLight = 0;
     windowOpacity = 1;
+    fontName = "System: Space Mono";
+    fontWidth = 1.4;
     margin = 0;
     blinkingCursor = false;
     frameMargin = 0;
@@ -74,6 +74,57 @@ inputs: {
       builtin = false;
     }
   ];
+
+  monitorCommand = pkgs.writeShellApplication {
+    name = "retro-cool-term-monitor";
+    runtimeInputs = with pkgs; [
+      bottom
+      coreutils
+      ncurses
+    ];
+    text = ''
+      export TERM=xterm-256color
+
+      lines="$(tput lines 2>/dev/null || printf 48)"
+      bottom_lines=$((lines - 20))
+      if [ "$bottom_lines" -lt 1 ]; then
+        bottom_lines=1
+      fi
+
+      config="$(mktemp "''${TMPDIR:-/tmp}/retro-cool-term-bottom.XXXXXX.toml")"
+      cleanup() {
+        rm -f "$config"
+      }
+      trap cleanup EXIT
+
+      cat > "$config" <<BTM_CONFIG
+      dot_marker = true
+      default_widget_type = "cpu"
+
+      [[row]]
+        [[row.child]]
+        type="cpu"
+      [[row]]
+        ratio=2
+        [[row.child]]
+          ratio=4
+          type="mem"
+        [[row.child]]
+          ratio=3
+          [[row.child.child]]
+            type="temp"
+          [[row.child.child]]
+            type="disk"
+      BTM_CONFIG
+
+      set +e
+      btm -m --default_widget_type cpu --config_location "$config"
+      code=$?
+      set -e
+      echo bottom exited with status "$code"
+      sleep 360
+    '';
+  };
 
   retroCoolTerm = pkgs.symlinkJoin {
     name = "retro-cool-term";
@@ -114,7 +165,7 @@ inputs: {
 
       cat > $out/bin/retro-cool-term-atop <<'EOF'
       #!${pkgs.runtimeShell}
-      exec "$(dirname "$0")/retro-cool-term" "$@" -e ${pkgs.runtimeShell} -lc 'export TERM=xterm-256color; ${pkgs.atop}/bin/atop; code=$?; echo atop exited with status $code; sleep 360'
+      exec "$(dirname "$0")/retro-cool-term" "$@" -e ${monitorCommand}/bin/retro-cool-term-monitor
       EOF
       chmod +x $out/bin/retro-cool-term-atop
     '';

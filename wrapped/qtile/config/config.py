@@ -198,9 +198,9 @@ finder_layout_config = dict(
 )
 
 groups = [
-    Group(name="1", label="", screen_affinity=0, layout="screensplit"),
-    Group(name="2", label="", screen_affinity=0, layout="max", layouts=[layout.Max()], matches=[Match(wm_class="looking-glass-client")]),
-    Group(name="3", screen_affinity=0, layout="finder", layouts=[Finder(**finder_layout_config)]),
+    Group(name="1", screen_affinity=0, layout="screensplit"),
+    Group(name="2", screen_affinity=0, layout="finder", layouts=[Finder(**finder_layout_config)]),
+    Group(name="v", screen_affinity=0, layout="max", layouts=[layout.Max()], matches=[Match(wm_class="looking-glass-client")]),
     Group(name="4", screen_affinity=1, layout="verticaltile", layouts=[layout.VerticalTile(border_focus=["#7aa2f7", "#bb9af7"], border_normal="#414868", border_width=1)], matches=[Match(wm_class="vesktop"), Match(wm_class="spotify")]),
 ]
 
@@ -231,15 +231,6 @@ def go_to_group_and_move_window(name: str):
         qtile.focus_screen(group.screen_affinity if group.screen_affinity is not None else 0)
         group.toscreen()
     return _inner
-
-def is_satty(window):
-    if getattr(window, "_is_satty", False):
-        return True
-    try:
-        wm_class = window.window.get_wm_class() or []
-    except Exception:
-        return False
-    return "satty" in [name.lower() for name in wm_class]
 
 def is_screen_0_background(window):
     if getattr(window, "_is_screen_0_background", False):
@@ -310,17 +301,11 @@ layouts = [
 left = ""
 right = ""
 
-widget_defaults = dict(
-    font="Inter Variable",
-    fontsize=12,
-    padding=3,
-)
-extension_defaults = widget_defaults.copy()
-
 @hook.subscribe.startup_once
 def set_root_cursor():
     global screen_0_background_pid
     qtile.spawn("xsetroot -cursor_name left_ptr")
+    qtile.spawn("looking-glass-client -F")
     qtile.spawn("vesktop")
     qtile.spawn("spotify")
     log = open("/tmp/retro-cool-term-atop.log", "ab")
@@ -351,16 +336,22 @@ def ignore_screen_0_background_mouse_enter(window):
         send_screen_0_background_to_bottom(window)
         refocus_current_group()
 
+widget_defaults = dict(
+    font="Univers67CondensedBold",
+    fontsize=24,
+    padding=3,
+    foreground="#20181d",
+)
+extension_defaults = widget_defaults.copy()
+
 screens = [
     Screen(
         background="#1a1b26",
+        left=bar.Gap(2),
+        right=bar.Gap(2),
         bottom=bar.Bar(
             [
-                extra_widget.CurrentLayoutIcon(),
-                widget.CurrentLayout(),
-                widget.ScreenSplit(),
                 widget.GroupBox(
-                    font="FontAwesome",
                     highlight_method="text",
                     inactive="#414868",
                     this_current_screen_border="#7aa2f7",
@@ -371,16 +362,12 @@ screens = [
                 widget.Spacer(),
                 widget.Mpris2(),
                 widget.Spacer(),
-                widget.Chord(
-                    foreground="#ff9e64",
-                    name_transform=lambda name: name.upper(),
-                ),
                 widget.Systray(),
                 widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
                 widget.QuickExit(),
             ],
-            24,
-            background = "#1E1E2E",
+            32,
+            background = "#d9ccc5",
         ),
     ), Screen(
         background="#1a1b26",
