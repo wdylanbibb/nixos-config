@@ -78,6 +78,7 @@ inputs:
             "tokyonight-moon" = tokyonight-nvim;
             "tokyonight-storm" = tokyonight-nvim;
             "tokyonight-day" = tokyonight-nvim;
+            "oxocarbon" = oxocarbon-nvim;
           }
         );
       };

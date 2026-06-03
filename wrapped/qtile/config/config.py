@@ -201,7 +201,7 @@ groups = [
     Group(name="1", screen_affinity=0, layout="screensplit"),
     Group(name="2", screen_affinity=0, layout="finder", layouts=[Finder(**finder_layout_config)]),
     Group(name="v", screen_affinity=0, layout="max", layouts=[layout.Max()], matches=[Match(wm_class="looking-glass-client")]),
-    Group(name="4", screen_affinity=1, layout="verticaltile", layouts=[layout.VerticalTile(border_focus=["#7aa2f7", "#bb9af7"], border_normal="#414868", border_width=1)], matches=[Match(wm_class="vesktop"), Match(wm_class="spotify")]),
+    Group(name="4", screen_affinity=1, layout="verticaltile", layouts=[layout.VerticalTile(border_focus="#FFFFFF", border_normal="#000000", border_width=4)], matches=[Match(wm_class="vesktop"), Match(wm_class="spotify")]),
 ]
 
 def focus_group(name: str, screen_index: int | None = None):
@@ -292,7 +292,7 @@ for i in groups:
 
 layouts = [
     layout.ScreenSplit(splits=[
-        {"layout": layout.MonadThreeCol(new_client_position="bottom", ratio=2/3, border_focus=["#7aa2f7", "#bb9af7"], border_normal="#414868", border_width=1), "rect": (0, 1/3, 1, 2/3), "name": "bottom"},
+        {"layout": layout.MonadThreeCol(new_client_position="bottom", ratio=2/3, border_focus="#FFFFFF", border_normal="#000000", border_width=4), "rect": (0, 1/3, 1, 2/3), "name": "bottom"},
         {"layout": layout.RatioTile(border_focus=["#7aa2f7", "#bb9af7"], border_normal="#414868", border_width=1), "rect": (0, 0, 1, 1/3), "name": "top"},
     ]),
     Finder(**finder_layout_config),
@@ -353,8 +353,8 @@ screens = [
             [
                 widget.GroupBox(
                     highlight_method="text",
-                    inactive="#414868",
-                    this_current_screen_border="#7aa2f7",
+                    inactive="#FFFFFF",
+                    this_current_screen_border="#000000",
                     visible_groups = ['1', '2']
                 ),
                 widget.Prompt(),
@@ -367,7 +367,7 @@ screens = [
                 widget.QuickExit(),
             ],
             32,
-            background = "#d9ccc5",
+            background = "#FFFFFF",
         ),
     ), Screen(
         background="#1a1b26",

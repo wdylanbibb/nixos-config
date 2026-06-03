@@ -73,6 +73,7 @@ in
       bold_italic_font = "family='MonaspiceRn Nerd Font' style='Bold Italic' features='+calt +liga +ss10 +ss09 +ss08 +ss07'";
 
       font_size = 11.0;
+      background = "#000000";
 
       active_tab_font_style = "bold";
       inactive_tab_font_style = "normal";
@@ -149,7 +150,7 @@ in
       "ctrl+shift+x" = "scroll_to_prompt 1";
     };
 
-    themeFile = "tokyo_night_night";
+    themeFile = "GitHub_Dark_High_Contrast";
 
     kittens = {
       "navigate_kitty.py" = ''
