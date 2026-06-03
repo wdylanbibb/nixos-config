@@ -7,6 +7,7 @@ from libqtile.command.base import expose_command
 from libqtile.config import ScreenRect
 from libqtile.layout.base import Layout
 from libqtile.layout.tree import TreeTab, Window
+from xcffib.xproto import StackMode
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -61,6 +62,8 @@ class Finder(TreeTab):
                 None,
             )
             client.unhide()
+            if self._finder_visible:
+                self._raise_panel()
         else:
             client.hide()
 
@@ -69,6 +72,7 @@ class Finder(TreeTab):
         if self._finder_visible:
             self._resize_panel(screen_rect)
             self._panel.unhide()
+            self._raise_panel()
 
     def hide(self) -> None:
         self.hide_window_list()
@@ -93,6 +97,14 @@ class Finder(TreeTab):
         )
         self._create_drawer(screen_rect)
         self.draw_panel()
+        self._raise_panel()
+
+    def _raise_panel(self) -> None:
+        if not self._panel:
+            return
+
+        self._panel.window.configure(stackmode=StackMode.Above)
+        self.group.qtile.core.conn.flush()
 
     def draw_panel(self, *args) -> None:
         if not self._finder_visible:
@@ -161,6 +173,7 @@ class Finder(TreeTab):
         self._finder_visible = True
         self._resize_panel(screen_rect)
         self._panel.unhide()
+        self._raise_panel()
 
     @expose_command()
     def hide_window_list(self) -> None:
@@ -180,12 +193,14 @@ class Finder(TreeTab):
         super().next()
         if self._finder_visible:
             self.draw_panel()
+            self._raise_panel()
 
     @expose_command("up")
     def previous(self) -> None:
         super().previous()
         if self._finder_visible:
             self.draw_panel()
+            self._raise_panel()
 
     @expose_command()
     def select_window(self) -> None:

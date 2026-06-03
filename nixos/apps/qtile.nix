@@ -17,6 +17,8 @@
     evince
     satty
     xclip
+    atop
+    wrappedPkgs.retro-cool-term
     xorg.xsetroot
   ];
   eurostileFont = pkgs.stdenvNoCC.mkDerivation {
@@ -69,6 +71,7 @@ in {
     environment.variables = {
       GDK_SCALE = "1";
       GDK_DPI_SCALE = "1";
+      QTILE_WALLPAPER_DIR = "${../../wrapped/qtile/wallpapers}";
     };
 
     services.pipewire = {
@@ -78,6 +81,7 @@ in {
 
     fonts.packages = with pkgs; [
       eurostileFont
+      wrappedPkgs.retro-cool-term
       nerd-fonts.monaspace
       inter
       font-awesome

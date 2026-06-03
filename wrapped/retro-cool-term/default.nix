@@ -69,7 +69,7 @@ inputs: {
 
   customProfiles = builtins.toJSON [
     {
-      text = "Space Mono Btop";
+      text = "Space Mono Atop";
       obj_string = profile;
       builtin = false;
     }
@@ -109,8 +109,14 @@ inputs: {
       rm -f $out/bin/retro-cool-term
       makeWrapper ${pkgs.cool-retro-term}/bin/cool-retro-term $out/bin/retro-cool-term \
         --set FONTCONFIG_FILE ${fontconfig} \
-        --run 'export XDG_DATA_HOME="''${XDG_RUNTIME_DIR:-/tmp}/retro-cool-term"; rm -rf "$XDG_DATA_HOME/cool-retro-term"; mkdir -p "$XDG_DATA_HOME"; cp -R '"$config_dir"'/cool-retro-term "$XDG_DATA_HOME/"; chmod -R u+w "$XDG_DATA_HOME/cool-retro-term"' \
-        --add-flags "--profile 'Space Mono Btop'"
+        --run 'export XDG_DATA_HOME="$(${pkgs.coreutils}/bin/mktemp -d "''${TMPDIR:-/tmp}/retro-cool-term.XXXXXX")"; ${pkgs.coreutils}/bin/cp -R '"$config_dir"'/cool-retro-term "$XDG_DATA_HOME/"; ${pkgs.coreutils}/bin/chmod -R u+w "$XDG_DATA_HOME/cool-retro-term"' \
+        --add-flags "--profile 'Space Mono Atop'"
+
+      cat > $out/bin/retro-cool-term-atop <<'EOF'
+      #!${pkgs.runtimeShell}
+      exec "$(dirname "$0")/retro-cool-term" "$@" -e ${pkgs.runtimeShell} -lc 'export TERM=xterm-256color; ${pkgs.atop}/bin/atop; code=$?; echo atop exited with status $code; sleep 360'
+      EOF
+      chmod +x $out/bin/retro-cool-term-atop
     '';
   };
 in {

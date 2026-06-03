@@ -1,10 +1,10 @@
 import os
+import subprocess
 
 import libqtile.resources
 from libqtile import bar, hook, layout, qtile, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen, KeyChord
 from libqtile.lazy import lazy
-from libqtile.utils import guess_terminal
 
 from qtile_extras import widget as extra_widget
 
@@ -14,8 +14,16 @@ mod = "mod4"
 mod1 = "alt"
 mod2 = "control"
 home = os.path.expanduser("~")
-terminal = guess_terminal()
+terminal = "kitty"
 edge_tolerance = 2
+wallpaper_dir = os.environ.get(
+    "QTILE_WALLPAPER_DIR",
+    os.path.join(os.path.dirname(__file__), "wallpapers"),
+)
+screen_0_wallpaper = os.path.join(wallpaper_dir, "5yFVyfC.png")
+screen_0_background_title = "qtile-screen-0-atop-background"
+screen_0_background_command = ["retro-cool-term-atop", "-T", screen_0_background_title]
+screen_0_background_pid = None
 # screenshot_command = "maim -su | satty --filename - --output-filename - --early-exit --action-on-escape save-to-file | magick - \\( +clone -background black -shadow 80x3+10+10 \\) +swap -background none -layers merge +repage - | xclip -selection clipboard -target image/png -in"
 screenshot_command = "maim -su | xclip -selection clipboard -t image/png"
 
@@ -182,8 +190,8 @@ keys = [
 ]
 
 finder_layout_config = dict(
-    bg_color="#ffffff",
-    foreground="#000000",
+    bg_color="#d8cbc4",
+    foreground="#180e13",
     font="Eurostile Extended",
     fontsize=144,
     sections=["Default"],
@@ -233,6 +241,58 @@ def is_satty(window):
         return False
     return "satty" in [name.lower() for name in wm_class]
 
+def is_screen_0_background(window):
+    if getattr(window, "_is_screen_0_background", False):
+        return True
+
+    if getattr(window, "name", None) == screen_0_background_title:
+        window._is_screen_0_background = True
+        return True
+
+    if screen_0_background_pid is None:
+        return False
+
+    try:
+        pid = window.get_pid()
+    except Exception:
+        return False
+
+    if pid == screen_0_background_pid:
+        window._is_screen_0_background = True
+        return True
+
+    return False
+
+def screen_0_background_rect():
+    screen = qtile.screens[0]
+    return screen.get_rect()
+
+def send_screen_0_background_to_bottom(window):
+    if not is_screen_0_background(window):
+        return
+
+    if hasattr(window, "can_steal_focus"):
+        window.can_steal_focus = False
+
+    if len(qtile.screens) > 0 and getattr(window, "group", None) is not None:
+        rect = screen_0_background_rect()
+        window.static(0, rect.x, rect.y, rect.width, rect.height)
+        return
+
+    if len(qtile.screens) > 0 and hasattr(window, "place"):
+        rect = screen_0_background_rect()
+        window.place(rect.x, rect.y, rect.width, rect.height, 0, "#000000")
+
+    if hasattr(window, "keep_below"):
+        window.keep_below(True)
+
+def refocus_current_group():
+    win = qtile.current_group.current_window
+    if win is not None and not is_screen_0_background(win):
+        qtile.current_group.focus(win, warp=False, force=True)
+        return
+    qtile.core.clear_focus()
+
 for i in groups:
     keys.extend([
         Key([mod], i.name, lazy.function(go_to_group(i.name))),
@@ -259,7 +319,37 @@ extension_defaults = widget_defaults.copy()
 
 @hook.subscribe.startup_once
 def set_root_cursor():
+    global screen_0_background_pid
     qtile.spawn("xsetroot -cursor_name left_ptr")
+    qtile.spawn("vesktop")
+    qtile.spawn("spotify")
+    log = open("/tmp/retro-cool-term-atop.log", "ab")
+    screen_0_background_pid = subprocess.Popen(
+        screen_0_background_command,
+        stdout=log,
+        stderr=subprocess.STDOUT,
+    ).pid
+
+@hook.subscribe.client_managed
+def manage_screen_0_background(window):
+    send_screen_0_background_to_bottom(window)
+    qtile.call_later(0.5, send_screen_0_background_to_bottom, window)
+
+@hook.subscribe.client_name_updated
+def manage_renamed_screen_0_background(window):
+    send_screen_0_background_to_bottom(window)
+
+@hook.subscribe.client_focus
+def keep_screen_0_background_unfocused(window):
+    if is_screen_0_background(window):
+        send_screen_0_background_to_bottom(window)
+        refocus_current_group()
+
+@hook.subscribe.client_mouse_enter
+def ignore_screen_0_background_mouse_enter(window):
+    if is_screen_0_background(window):
+        send_screen_0_background_to_bottom(window)
+        refocus_current_group()
 
 screens = [
     Screen(
