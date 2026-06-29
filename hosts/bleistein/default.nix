@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, var, ... }:
 {
   imports = [
     ./disko.nix
@@ -41,6 +41,14 @@
       enable = true;
     };
     network.tailscale.enable = false;
+    secrets.extraSecrets = {
+      cowsay = {
+        sopsFile = "${var.secrets}/bot-tokens.yaml";
+      };
+      weedtime = {
+        sopsFile = "${var.secrets}/bot-tokens.yaml";
+      };
+    };
   };
 
   modules.apps = {
