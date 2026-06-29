@@ -78,7 +78,19 @@ in
       defaultSopsFile = cfg.defaultSopsFile;
       age.sshKeyPaths = cfg.sshKeyPaths;
       secrets = {
+        kubeconfig = {
+          owner = "dylan";
+          group = "users";
+        };
         passwd.neededForUsers = true;
+        talos-auth = {
+          owner = "dylan";
+          group = "users";
+        };
+        talos-config = {
+          owner = "dylan";
+          group = "users";
+        };
         ts-authkey = lib.mkIf config.modules.system.network.tailscale.enable {
           restartUnits = [ "tailscaled.service" ];
         };

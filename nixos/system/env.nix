@@ -31,6 +31,11 @@ in
   config = lib.mkMerge [
     {
       environment = {
+        variables = {
+          KUBECONFIG = config.sops.secrets.kubeconfig.path;
+          TALOSCONFIG = config.sops.secrets.talos-config.path;
+        };
+
         systemPackages = with pkgs; [
           vim
           rust-bin.stable.latest.default
@@ -69,6 +74,11 @@ in
 
       time.timeZone = "America/New_York";
       i18n.defaultLocale = "en_US.UTF-8";
+
+      programs.zsh.shellInit = ''
+        export KUBECONFIG="${config.sops.secrets.kubeconfig.path}"
+        export TALOSCONFIG="${config.sops.secrets.talos-config.path}"
+      '';
     }
     (lib.mkIf obsCfg.enable (
       lib.mkMerge [
