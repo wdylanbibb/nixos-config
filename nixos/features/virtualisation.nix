@@ -8,6 +8,16 @@
 let
   cfg = config.features.virtualisation;
 
+  lookingGlassClient = pkgs.symlinkJoin {
+    name = "looking-glass-client-${pkgs.looking-glass-client.version}";
+    paths = [ pkgs.looking-glass-client ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/looking-glass-client \
+        --set __NV_DISABLE_EXPLICIT_SYNC 1
+    '';
+  };
+
   addUsersToGroups =
     groups:
     var.users
@@ -78,7 +88,7 @@ in
     })
     (lib.mkIf cfg.libvirt.enable {
       environment.systemPackages = with pkgs; [
-        looking-glass-client
+        lookingGlassClient
         virt-manager
       ];
 
