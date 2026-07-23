@@ -33,6 +33,7 @@
         ];
       };
     };
+    k8s.enable = true;
   };
 
   modules.system = {

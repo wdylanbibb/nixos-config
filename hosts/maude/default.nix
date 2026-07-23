@@ -5,7 +5,10 @@
     ./hardware-configuration.nix
   ];
 
-  features.users.enable = true;
+  features = {
+    k8s.enable = true;
+    users.enable = true;
+  };
 
   modules.system = {
     persist.enable = true;

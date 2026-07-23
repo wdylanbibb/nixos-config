@@ -31,11 +31,6 @@ in
   config = lib.mkMerge [
     {
       environment = {
-        variables = {
-          KUBECONFIG = config.sops.secrets.kubeconfig.path;
-          TALOSCONFIG = config.sops.secrets.talos-config.path;
-        };
-
         systemPackages = with pkgs; [
           vim
           rust-bin.stable.latest.default
