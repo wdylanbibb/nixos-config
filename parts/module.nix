@@ -116,6 +116,6 @@ in
         };
       };
 
-    systems = lib.mkDefault lib.systems.flakeExposed;
+    systems = [ "x86_64-linux" ];
   };
 }

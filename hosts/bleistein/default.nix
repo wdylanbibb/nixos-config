@@ -37,7 +37,10 @@
   };
 
   modules.system = {
-    nvidia.enable = true;
+    nvidia = {
+      enable = true;
+      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    };
     persist = {
       enable = true;
     };
@@ -60,7 +63,7 @@
       virtualCamera.users = [ "dylan" ];
     };
     qtile.enable = true;
-    lightdm.enable = true;
+    sddm.enable = true;
   };
 
   services.avahi = {
