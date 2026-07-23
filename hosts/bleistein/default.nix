@@ -54,6 +54,7 @@
 
   modules.apps = {
     gtk.enable = true;
+    sway.enable = true;
     obs = {
       enable = true;
       virtualCamera.users = [ "dylan" ];

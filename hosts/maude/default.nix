@@ -17,6 +17,7 @@
 
   modules.apps = {
     gtk.enable = true;
+    sway.enable = true;
     niri.enable = true;
     lightdm.enable = true;
   };
