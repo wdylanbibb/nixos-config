@@ -14,7 +14,16 @@ let
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       wrapProgram $out/bin/looking-glass-client \
-        --set __NV_DISABLE_EXPLICIT_SYNC 1
+        --set __NV_DISABLE_EXPLICIT_SYNC 1 \
+        --add-flags "-g opengl"
+
+      rm $out/share/applications/looking-glass-client.desktop
+      substitute \
+        ${pkgs.looking-glass-client}/share/applications/looking-glass-client.desktop \
+        $out/share/applications/looking-glass-client.desktop \
+        --replace-fail \
+        "Exec=${pkgs.looking-glass-client}/bin/looking-glass-client" \
+        "Exec=$out/bin/looking-glass-client"
     '';
   };
 
