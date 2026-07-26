@@ -8,22 +8,12 @@ let
   cfg = config.modules.apps.gtk;
 
   theme = {
-    name = "Graphite-Dark";
-    package = pkgs.graphite-gtk-theme.overrideAttrs (_old: {
-      installPhase = ''
-        runHook preInstall
-
-        mkdir -p $out/share/themes
-        patchShebangs install.sh
-        ./install.sh --dest $out/share/themes --name Graphite --theme default --color dark --tweaks black
-
-        runHook postInstall
-      '';
-    });
+    name = "Tokyonight-Dark";
+    package = pkgs.tokyonight-gtk-theme;
   };
   iconTheme = {
-    name = "HighContrast";
-    package = pkgs.gnome-themes-extra;
+    name = "Papirus-Dark";
+    package = pkgs.papirus-icon-theme;
   };
   cursorTheme = {
     name = "Bibata-Modern-Classic";
