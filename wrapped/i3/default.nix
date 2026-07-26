@@ -22,7 +22,7 @@ inputs: {
   };
 
   config = {
-    package = pkgs.i3;
+    package = pkgs.i3-rounded;
     outputs = ["out"];
     filesToPatch = [];
     passthru.providedSessions = config.package.providedSessions;
