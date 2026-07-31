@@ -55,7 +55,12 @@
       <tlbflush state="on"/>
       <ipi state="on"/>
       <avic state="on"/>
+
+      <vendor_id state="on" value="DylanWinVM01"/>
     </hyperv>
+    <kvm>
+      <hidden state="on"/>
+    </kvm>
     <vmport state="off"/>
     <smm state="on"/>
   </features>
@@ -223,10 +228,9 @@
       <address type="pci" domain="0x0000" bus="0x00" slot="0x1b" function="0x0"/>
     </sound>
     <audio id="1" type="spice"/>
-    <video>
-      <model type="vga" vram="16384" heads="1" primary="yes"/>
-      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x0"/>
-    </video>
+    <!-- <video> -->
+    <!--   <model type="vga" vram="16384" heads="1" primary="yes"/> -->
+    <!-- </video> -->
     <hostdev mode="subsystem" type="pci" managed="yes">
       <source>
         <address domain="0x0000" bus="0x0d" slot="0x00" function="0x0"/>
@@ -239,12 +243,12 @@
       </source>
       <address type="pci" domain="0x0000" bus="0x06" slot="0x00" function="0x0"/>
     </hostdev>
-    <redirdev bus="usb" type="spicevmc">
-      <address type="usb" bus="0" port="2"/>
-    </redirdev>
-    <redirdev bus="usb" type="spicevmc">
-      <address type="usb" bus="0" port="3"/>
-    </redirdev>
+    <!-- <redirdev bus="usb" type="spicevmc"> -->
+    <!--   <address type="usb" bus="0" port="2"/> -->
+    <!-- </redirdev> -->
+    <!-- <redirdev bus="usb" type="spicevmc"> -->
+    <!--   <address type="usb" bus="0" port="3"/> -->
+    <!-- </redirdev> -->
     <watchdog model="itco" action="reset"/>
     <memballoon model="none"/>
   </devices>

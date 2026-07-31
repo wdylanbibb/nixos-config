@@ -55,15 +55,14 @@
     };
   };
 
+  modules.desktop.profile = "xfce-i3-tokyonight";
+
   modules.apps = {
-    gtk.enable = true;
-    i3.enable = true;
     obs = {
       enable = true;
       virtualCamera.users = [ "dylan" ];
     };
     qtile.enable = true;
-    sddm.enable = true;
   };
 
   services.avahi = {
