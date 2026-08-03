@@ -117,7 +117,7 @@ in
       Mod+Shift+Slash { show-hotkey-overlay; }
       Mod+Tab { spawn "vicinae" "toggle"; }
       Alt+Tab { spawn "vicinae" "vicinae://extensions/vicinae/wm/switch-windows"; }
-      Mod+Return { spawn "wezterm"; }
+      Mod+Return { spawn "kitty"; }
       Super+Alt+L { spawn "swaylock"; }
 
       XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"; }

@@ -7,7 +7,7 @@ inputs:
 {
   imports = [ wlib.wrapperModules.waybar ];
 
-  settings.mainBar = {
+  settings = {
         reload_style_on_change = true;
         toggle = true;
         layer = "top";
@@ -368,16 +368,8 @@ inputs:
           background: @background;
         }
 
-        .modules-right {
-          margin-top: -8px;
-          margin-bottom: -8px;
-        }
-
-        .modules-center {
-          margin-top: -8px;
-          margin-bottom: -8px;
-        }
-
+        .modules-right,
+        .modules-center,
         .modules-left {
           margin-top: -8px;
           margin-bottom: -8px;
