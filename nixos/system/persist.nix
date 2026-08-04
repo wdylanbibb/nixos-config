@@ -42,28 +42,55 @@ in
       serviceConfig.Type = "oneshot";
 
       script = ''
-        mkdir /btrfs_tmp
+        set -euo pipefail
+
+        mkdir -p /btrfs_tmp
         mount /dev/disk/by-partlabel/disk-main-root /btrfs_tmp
-        if [[ -e /btrfs_tmp ]]; then
+
+        cleanup() {
+          umount /btrfs_tmp
+        }
+        trap cleanup EXIT
+
+        delete_subvolume_recursively() {
+          local subvolume="$1"
+
+          while IFS= read -r child; do
+            delete_subvolume_recursively "/btrfs_tmp/$child"
+          done < <(
+            btrfs subvolume list -o "$subvolume" |
+              cut -f 9- -d ' '
+          )
+
+          btrfs subvolume delete "$subvolume"
+        }
+
+        if [[ -e /btrfs_tmp/root ]]; then
           mkdir -p /btrfs_tmp/old_roots
-          timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%-d_%H:%M:%S")
+
+          timestamp="$(
+            date \
+              --date="@$(stat -c %Y /btrfs_tmp/root)" \
+              "+%Y-%m-%d_%H:%M:%S"
+          )"
+
           mv /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
         fi
 
-        delete_subvolume_recursively() {
-          IFS=$'\n'
-          for i in $(btrfs subvolume list -o "$1" | cut -f 9- -d ' '); do
-            delete_subvolume_recursively "/btrfs_tmp/$i"
-          done
-          btrfs subvolume delete "$1"
-        }
-
-        for i in $(find /btrfs_tmp/old_roots/ -maxdepth 1 -mtime +30); do
-          delete_subvolume_recursively "$i"
-        done
+        if [[ -d /btrfs_tmp/old_roots ]]; then
+          while IFS= read -r old_root; do
+            delete_subvolume_recursively "$old_root"
+          done < <(
+            find /btrfs_tmp/old_roots \
+              -mindepth 1 \
+              -maxdepth 1 \
+              -type d \
+              -mtime +30 \
+              -print
+          )
+        fi
 
         btrfs subvolume create /btrfs_tmp/root
-        unmount /btrfs_tmp
       '';
     };
 
