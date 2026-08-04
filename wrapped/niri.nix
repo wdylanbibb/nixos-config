@@ -22,6 +22,7 @@ let
     evince
     loupe
     vicinae
+    xwayland-satellite
   ];
 in
 {

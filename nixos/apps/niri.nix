@@ -45,7 +45,10 @@ in {
       };
     };
 
-    programs.niri.enable = true;
+    programs.niri = {
+      enable = true;
+      package = wrappedPkgs.niri;
+    };
 
     systemd.user.services.mako = {
       description = "Lightweight Wayland notification daemon";
