@@ -75,7 +75,7 @@ in {
     environment.variables = {
       GDK_SCALE = "1";
       GDK_DPI_SCALE = "1";
-      QTILE_WALLPAPER_DIR = "${../../wrapped/qtile/wallpapers}";
+      QTILE_WALLPAPER_DIR = "${../../wallpapers}";
     };
 
     services.pipewire = {

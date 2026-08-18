@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   imports = [
     ./disko.nix
     ./hardware-configuration.nix
@@ -15,11 +14,7 @@
     network.tailscale.enable = true;
   };
 
-  modules.apps = {
-    gtk.enable = true;
-    niri.enable = true;
-    lightdm.enable = true;
-  };
+  modules.desktop.profile = "cosmic-niri-tokyonight";
 
   services.avahi = {
     enable = true;

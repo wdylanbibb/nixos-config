@@ -28,7 +28,7 @@ inputs: {
   ];
 
   helperPath = lib.makeBinPath helperPackages;
-  wallpaperDir = "${./wallpapers}";
+  wallpaperDir = "${inputs.self}/wallpapers";
 in {
   imports = [wlib.modules.default];
 

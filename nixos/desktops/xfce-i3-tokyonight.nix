@@ -1,9 +1,13 @@
-{ config, lib, pkgs, var, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  var,
+  ...
+}: let
   enabled = config.modules.desktop.profile == "xfce-i3-tokyonight";
   wrappedPkgs = var.libInputs.self.packages.${pkgs.stdenv.hostPlatform.system};
-in
-{
+in {
   config = lib.mkIf enabled {
     modules.apps = {
       gtk.enable = true;
@@ -45,14 +49,13 @@ in
       wrappedPkgs.kitty
     ];
 
-    environment.sessionVariables.TOKYONIGHT_WALLPAPER =
-      "${../../wrapped/i3/wallpapers/crosses_4k.png} ${../../wrapped/i3/wallpapers/crosses_vert.png}";
+    environment.sessionVariables.TOKYONIGHT_WALLPAPER = "${../../wallpapers/crosses_4k.png} ${../../wallpapers/crosses_vert.png}";
 
     services.pipewire = {
       enable = true;
       pulse.enable = true;
     };
 
-    fonts.packages = with pkgs; [ nerd-fonts.monaspace inter font-awesome ];
+    fonts.packages = with pkgs; [nerd-fonts.monaspace inter font-awesome];
   };
 }
