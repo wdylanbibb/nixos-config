@@ -44,7 +44,7 @@
     persist = {
       enable = true;
     };
-    network.tailscale.enable = false;
+    network.tailscale.enable = true;
     secrets.extraSecrets = {
       cowsay = {
         sopsFile = "${var.secrets}/bot-tokens.yaml";
