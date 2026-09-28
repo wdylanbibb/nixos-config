@@ -14,7 +14,7 @@
     network.tailscale.enable = true;
   };
 
-  modules.desktop.profile = "cosmic-niri-tokyonight";
+  modules.desktop.profile = "niri-noctalia-tokyonight";
 
   services.avahi = {
     enable = true;

@@ -233,6 +233,26 @@
         "type": "github"
       }
     },
+    "noctalia": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790596225,
+        "narHash": "sha256-C1gVf/fs4MGc4p/fWiZzCQ4gwN2T1HTF/DQpGiVSLFA=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia",
+        "rev": "6b0178f00785005f9c032913435f372b99841e57",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "noctalia",
+        "type": "github"
+      }
+    },
     "plugins-lze": {
       "flake": false,
       "locked": {
@@ -337,6 +357,7 @@
         "nix-cats": "nix-cats",
         "nix-virt": "nix-virt",
         "nixpkgs": "nixpkgs_2",
+        "noctalia": "noctalia",
         "plugins-lze": "plugins-lze",
         "plugins-lzextras": "plugins-lzextras",
         "plugins-nvim-recorder": "plugins-nvim-recorder_2",

@@ -69,8 +69,8 @@
   # as the session compositor, so give the COSMIC shell its own lifecycle.
   cosmicService = description: package: executable: {
     inherit description;
-    wantedBy = ["cosmic-niri-session.target"];
-    partOf = ["cosmic-niri-session.target"];
+    wantedBy = ["niri-shell.target"];
+    partOf = ["niri-shell.target"];
     after = ["graphical-session.target" "cosmic-tokyonight-theme.service"];
     serviceConfig = {
       ExecStart = lib.getExe' package executable;
@@ -81,7 +81,17 @@
 in {
   config = lib.mkIf enabled {
     modules.apps = {
-      niri.enable = true;
+      niri = {
+        enable = true;
+        actions = {
+          applications = ["cosmic-app-library"];
+          files = ["cosmic-files"];
+          launcher = ["cosmic-launcher"];
+          media = ["cosmic-player"];
+          settings = ["cosmic-settings"];
+          terminal = ["kitty"];
+        };
+      };
       sddm.enable = true;
     };
 
@@ -208,17 +218,11 @@ in {
     };
 
     systemd.user = {
-      targets.cosmic-niri-session = {
-        description = "COSMIC shell services for the Niri session";
-        bindsTo = ["graphical-session.target"];
-        after = ["graphical-session.target"];
-      };
-
       services = {
         cosmic-tokyonight-theme = {
           description = "Apply the Tokyo Night theme to COSMIC applications";
-          wantedBy = ["cosmic-niri-session.target"];
-          partOf = ["cosmic-niri-session.target"];
+          wantedBy = ["niri-shell.target"];
+          partOf = ["niri-shell.target"];
           before = [
             "cosmic-app-library.service"
             "cosmic-launcher.service"

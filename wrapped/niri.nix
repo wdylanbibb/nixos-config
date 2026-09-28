@@ -6,15 +6,10 @@ inputs: {
   ...
 }: let
   extraPackages = with pkgs; [
-    cosmic-app-library
-    cosmic-files
-    cosmic-launcher
-    cosmic-screenshot
-    cosmic-settings
-    wl-clipboard
-    playerctl
     brightnessctl
+    playerctl
     systemd
+    wl-clipboard
     xwayland-satellite
   ];
 in {
@@ -29,16 +24,14 @@ in {
       prefer-no-csd
 
       environment {
-        COSMIC_DATA_CONTROL_ENABLED "1"
         ELECTRON_OZONE_PLATFORM_HINT "wayland"
         NIXOS_OZONE_WL "1"
-        XDG_CURRENT_DESKTOP "COSMIC:Niri"
       }
 
       // User services do not inherit Niri's environment from the systemctl
       // client. Import the session-specific Wayland socket before starting
-      // the COSMIC shell, otherwise the panel can attach to a stale display.
-      spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY DISPLAY NIRI_SOCKET XDG_CURRENT_DESKTOP XDG_SESSION_TYPE; systemctl --user start cosmic-niri-session.target"
+      // the shell selected by the active desktop profile.
+      spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY DISPLAY NIRI_SOCKET XDG_CURRENT_DESKTOP XDG_SESSION_TYPE; systemctl --user start niri-shell.target"
       spawn-at-startup "xwayland-satellite"
 
       input {
@@ -106,15 +99,14 @@ in {
         geometry-corner-radius 12
         clip-to-geometry true
         draw-border-with-background false
-        opacity 0.95
       }
 
       binds {
         Mod+Shift+Slash { show-hotkey-overlay; }
-        Mod+Tab { spawn "cosmic-launcher"; }
-        Mod+A { spawn "cosmic-app-library"; }
-        Mod+Return { spawn "kitty"; }
-        Mod+Shift+S { spawn "cosmic-settings"; }
+        Mod+Tab { spawn "niri-action" "launcher"; }
+        Mod+A { spawn "niri-action" "applications"; }
+        Mod+Return { spawn "niri-action" "terminal"; }
+        Mod+Shift+S { spawn "niri-action" "settings"; }
 
         XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"; }
         XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
@@ -128,8 +120,8 @@ in {
         XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+5%"; }
         XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%-"; }
 
-        Mod+P { spawn "cosmic-files"; }
-        XF86AudioMedia { spawn "cosmic-player"; }
+        Mod+P { spawn "niri-action" "files"; }
+        XF86AudioMedia { spawn "niri-action" "media"; }
 
         Mod+O repeat=false { toggle-overview; }
         Mod+Q repeat=false { close-window; }
