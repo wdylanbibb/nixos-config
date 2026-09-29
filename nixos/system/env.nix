@@ -63,6 +63,8 @@ in
           spotify
           firefox
           vesktop
+          feishin
+          obsidian
         ];
         enableAllTerminfo = true;
       };
@@ -73,6 +75,8 @@ in
       programs.zsh.shellInit = ''
         export KUBECONFIG="${config.sops.secrets.kubeconfig.path}"
         export TALOSCONFIG="${config.sops.secrets.talos-config.path}"
+
+        export EDITOR=nvim
       '';
     }
     (lib.mkIf obsCfg.enable (
