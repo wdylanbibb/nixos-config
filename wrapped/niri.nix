@@ -52,7 +52,7 @@ in {
       }
 
       layout {
-        gaps 8
+        gaps 4
         center-focused-column "never"
         always-center-single-column
         background-color "#1a1b26"

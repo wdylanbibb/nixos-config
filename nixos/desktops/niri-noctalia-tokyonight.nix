@@ -59,13 +59,17 @@ in {
       };
     };
 
-    # Noctalia treats this as the root containing noctalia/config.toml. Its
-    # GUI-managed overrides remain writable under the user's XDG state home.
+    # Noctalia treats this as the root containing noctalia/config.toml. Keep it
+    # in the session for CLI commands and pin it on the user service so startup
+    # does not depend on the systemd user manager inheriting the login session.
     environment.sessionVariables = {
       NOCTALIA_CONFIG_HOME = noctaliaConfig;
       ELECTRON_OZONE_PLATFORM_HINT = "wayland";
       NIXOS_OZONE_WL = "1";
     };
+
+    # GUI-managed overrides remain writable under the user's XDG state home.
+    systemd.user.services.noctalia.environment.NOCTALIA_CONFIG_HOME = noctaliaConfig;
 
     environment.systemPackages = [pkgs.nautilus];
 
