@@ -49,6 +49,12 @@ in
     libvirt = {
       enable = mkEnableOption "Enable the virtualisation feature.";
 
+      restartOnRebuild = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Whether to restart libvirtd when activating a new NixOS configuration.";
+      };
+
       pciIds = mkOption {
         type = with types; listOf str;
         description = "The PCI ids that are going to use the vfio driver.";
@@ -132,6 +138,8 @@ in
           destination = "/etc/udev/rules.d/70-kvmfr.rules";
         }
       );
+
+      systemd.services.libvirtd.restartIfChanged = cfg.libvirt.restartOnRebuild;
 
       virtualisation = {
         spiceUSBRedirection.enable = true;

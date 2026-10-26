@@ -65,6 +65,8 @@ in
           vesktop
           feishin
           obsidian
+          godot
+          godot-export-templates-bin
         ];
         enableAllTerminfo = true;
       };
