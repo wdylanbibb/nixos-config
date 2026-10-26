@@ -30,6 +30,11 @@ in
 
   config = lib.mkMerge [
     {
+      modules.apps.codex = {
+        enable = true;
+        daemon.enable = true;
+      };
+
       environment = {
         systemPackages = with pkgs; [
           vim
