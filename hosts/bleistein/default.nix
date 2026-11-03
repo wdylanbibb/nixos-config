@@ -22,8 +22,8 @@
       libvirt = {
         enable = true;
         pciIds = [
-          "10de:2504"
-          "10de:228e"
+          "10de:2783"
+          "10de:22bc"
         ];
         domains = [
           {
