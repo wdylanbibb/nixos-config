@@ -20,6 +20,7 @@ in
         sops
         talosctl
         fluxcd
+        terraform
       ];
 
       variables = {
