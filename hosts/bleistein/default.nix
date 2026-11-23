@@ -1,4 +1,14 @@
 { pkgs, config, var, ... }:
+let
+  # Copy a single wallpaper into the store so its path only depends on the
+  # image itself, not on the whole flake source (which changes every edit).
+  wallpaper =
+    name:
+    "${builtins.path {
+      path = "${var.libInputs.self}/wallpapers/${name}";
+      inherit name;
+    }}";
+in
 {
   imports = [
     ./disko.nix
@@ -55,7 +65,7 @@
     };
   };
 
-  modules.desktop.profile = "xfce-i3-tokyonight";
+  modules.desktop.profile = "sway-noctalia-tokyonight";
 
   modules.apps = {
     obs = {
@@ -63,6 +73,22 @@
       virtualCamera.users = [ "dylan" ];
     };
     qtile.enable = true;
+    sway.extraConfig = ''
+      output DP-2 {
+        mode 3840x2160@144Hz
+        position 0 200
+      }
+
+      output DP-3 {
+        mode 2560x1440@144Hz
+        position 3840 0
+        transform 270
+      }
+    '';
+    noctalia.settings.wallpaper.monitors = {
+      DP-2.path = wallpaper "crosses_4k.png";
+      DP-3.path = wallpaper "crosses_vert.png";
+    };
   };
 
   services.avahi = {

@@ -83,6 +83,7 @@ in
 
       var.overlays = with localInputs; [
         codex-cli-nix.overlays.default
+        nix-claude-code.overlays.default
         vicinae.overlays.default
         rust-overlay.overlays.default
       ];

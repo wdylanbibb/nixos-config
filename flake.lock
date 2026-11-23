@@ -143,6 +143,26 @@
         "type": "github"
       }
     },
+    "nix-claude-code": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794949264,
+        "narHash": "sha256-W9IcFFI76+D9GECAPmChLvvc41mefYkHowxrZSGI9jc=",
+        "owner": "ryoppippi",
+        "repo": "nix-claude-code",
+        "rev": "b176265279ad4d9ab2c5fa7f24ba9bd2ef25f80e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ryoppippi",
+        "repo": "nix-claude-code",
+        "type": "github"
+      }
+    },
     "nix-virt": {
       "inputs": {
         "nixpkgs": [
@@ -292,6 +312,26 @@
         "type": "github"
       }
     },
+    "noctalia-greeter": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793502517,
+        "narHash": "sha256-/0HVj6rm15Ihi0fDv83yvl+tH7iNqwKRWCb5SpSExf0=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia-greeter",
+        "rev": "effcb9ffc33f7120cbc6cfc6c6527e9da763a0e9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "noctalia-greeter",
+        "type": "github"
+      }
+    },
     "plugins-lze": {
       "flake": false,
       "locked": {
@@ -395,9 +435,11 @@
         "flake-parts": "flake-parts",
         "impermanence": "impermanence",
         "nix-cats": "nix-cats",
+        "nix-claude-code": "nix-claude-code",
         "nix-virt": "nix-virt",
         "nixpkgs": "nixpkgs_2",
         "noctalia": "noctalia",
+        "noctalia-greeter": "noctalia-greeter",
         "plugins-lze": "plugins-lze",
         "plugins-lzextras": "plugins-lzextras",
         "plugins-nvim-recorder": "plugins-nvim-recorder_2",

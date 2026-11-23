@@ -6,31 +6,38 @@
   ...
 }: let
   enabled = config.modules.desktop.profile == "niri-noctalia-tokyonight";
-  noctaliaConfig = pkgs.writeTextDir "noctalia/config.toml" ''
-    [theme]
-    mode = "dark"
-    source = "builtin"
-    builtin = "Tokyo-Night"
-
-    [wallpaper]
-    enabled = true
-
-    [wallpaper.default]
-    path = "${../../wallpapers/crosses_3x2.png}"
-
-    [bar.default]
-    margin_ends = 0
-    widget_spacing = 10
-    start = ["launcher", "workspaces", "taskbar"]
-    center = ["clock"]
-    end = ["media", "tray", "notifications", "clipboard", "network", "volume", "brightness", "battery", "control-center", "session"]
-
-    [widget.taskbar]
-    pinned = ["firefox", "kitty"]
-    group_by_workspace = true
-    only_active_workspace = true
-    show_workspace_label = true
-  '';
+  noctaliaDefaults = {
+    theme = {
+      mode = "dark";
+      source = "builtin";
+      builtin = "Tokyo-Night";
+    };
+    wallpaper = {
+      enabled = true;
+      default.path = "${../../wallpapers/crosses_3x2.png}";
+    };
+    bar.default = {
+      margin_ends = 0;
+      widget_spacing = 10;
+      start = ["launcher" "workspaces" "taskbar"];
+      center = ["clock"];
+      end = ["media" "tray" "notifications" "clipboard" "network" "volume" "brightness" "battery" "control-center" "session"];
+    };
+    widget.taskbar = {
+      pinned = ["firefox" "kitty"];
+      group_by_workspace = true;
+      only_active_workspace = true;
+      show_workspace_label = true;
+    };
+  };
+  noctaliaSettings = lib.recursiveUpdate noctaliaDefaults config.modules.apps.noctalia.settings;
+  noctaliaConfigFile = (pkgs.formats.toml {}).generate "config.toml" noctaliaSettings;
+  noctaliaConfig = pkgs.linkFarm "noctalia-config" [
+    {
+      name = "noctalia/config.toml";
+      path = noctaliaConfigFile;
+    }
+  ];
 in {
   imports = [var.libInputs.noctalia.nixosModules.default];
 

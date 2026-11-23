@@ -63,6 +63,8 @@ in
           fzf
           gh
           rclone
+          sshfs
+          claude-code
           imagemagick
 
           spotify
@@ -75,6 +77,9 @@ in
         ];
         enableAllTerminfo = true;
       };
+
+      # setuid fusermount wrapper so unprivileged users can run sshfs
+      programs.fuse.enable = true;
 
       time.timeZone = "America/New_York";
       i18n.defaultLocale = "en_US.UTF-8";
